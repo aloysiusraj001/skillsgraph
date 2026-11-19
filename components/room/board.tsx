@@ -1,7 +1,7 @@
 "use client";
 
-import { useLayoutEffect, useRef, useState, type DragEvent as ReactDragEvent } from "react";
-import { Compass, Flag, MessagesSquare, Pencil, Shapes } from "lucide-react";
+import { useState, type DragEvent as ReactDragEvent } from "react";
+import { CheckCircle2, Compass, CornerDownRight, Flag, MessageSquareQuote, MessagesSquare, Pencil, Pin as PinIcon, Shapes, Target } from "lucide-react";
 import { RoleToken } from "@/components/role-token";
 import {
   PLANTED_LABEL,
@@ -10,6 +10,9 @@ import {
   quadrantName,
   sentence,
   type Action,
+  type BoneLabel,
+  type Hop,
+  type Pin,
   type Quadrant,
   type RoleId,
   type RoomState,
@@ -591,6 +594,22 @@ function Incidents({
   );
 }
 
+const CHIP_LABEL = { evidence: "Evidence", assumption: "Assumption", "need-to-check": "Need to check" } as const;
+
+const TOP_RIB_ANCHORS = [24, 58, 92] as const;
+const BOTTOM_RIB_ANCHORS = [20, 54, 88] as const;
+const COL_CENTERS = [144, 450, 756] as const;
+
+function countDescendantHops(hops: Hop[], parentId: string): number {
+  const direct = hops.filter((hop) => hop.parentId === parentId && !hop.proposed);
+  return direct.reduce((total, hop) => total + 1 + countDescendantHops(hops, hop.id), 0);
+}
+
+function hasDescendantRoot(hops: Hop[], parentId: string): boolean {
+  const direct = hops.filter((hop) => hop.parentId === parentId && !hop.proposed);
+  return direct.some((hop) => Boolean(hop.root) || hasDescendantRoot(hops, hop.id));
+}
+
 function Fish({
   state,
   selected,
@@ -609,114 +628,193 @@ function Fish({
   const incident = lockedIncident(state);
   const following = roots(state).find((card) => card.id === state.summary.whoseId);
   const top = state.bones.slice(0, 3);
-  const bottom = state.bones.slice(3);
+  const bottom = state.bones.slice(3, 6);
   const tray = state.causes.filter((cause) => !cause.bone);
   const canMove = role === "mapper" && !readOnly && state.stage === "s4a";
-  const rootRef = useRef<HTMLDivElement>(null);
-  const spineRef = useRef<HTMLDivElement>(null);
-  const labelRefs = useRef<Record<string, HTMLDivElement | null>>({});
-  const [ribLines, setRibLines] = useState<{ id: string; x1: number; y1: number; x2: number; y2: number; stroke: string }[]>([]);
-  const ribKey = useRef("");
-  useLayoutEffect(() => {
-    const root = rootRef.current;
-    const spine = spineRef.current;
-    if (!root || !spine) return;
-    const measure = () => {
-      const rootBox = root.getBoundingClientRect();
-      const spineBox = spine.getBoundingClientRect();
-      const spineY = spineBox.top + spineBox.height / 2 - rootBox.top;
-      const spineLeft = spineBox.left - rootBox.left;
-      const spineRight = spineBox.right - rootBox.left;
-      const next = state.bones.flatMap((bone) => {
-        const label = labelRefs.current[bone.id];
-        if (!label) return [];
-        const box = label.getBoundingClientRect();
-        const followed = state.focusBone === bone.id;
-        const glow = followed || (!state.focusBone && state.selectedBones.includes(bone.id));
-        const x2 = box.right - rootBox.left;
-        const y2 = box.top + box.height / 2 - rootBox.top;
-        const x1 = Math.max(spineLeft + 12, Math.min(spineRight - 8, x2 + 36));
-        return [{
-          id: bone.id,
-          x1: Math.round(x1),
-          y1: Math.round(spineY),
-          x2: Math.round(x2),
-          y2: Math.round(y2),
-          stroke: glow ? "#0E948C" : "#1b2a4a",
-        }];
-      });
-      const key = next.map((rib) => `${rib.id}:${rib.x1}:${rib.y1}:${rib.x2}:${rib.y2}:${rib.stroke}`).join("|");
-      if (key === ribKey.current) return;
-      ribKey.current = key;
-      setRibLines(next);
-    };
-    measure();
-    const observer = new ResizeObserver(measure);
-    observer.observe(root);
-    return () => observer.disconnect();
-  }, [state.bones, state.causes, state.focusBone, state.hops, state.selectedBones, state.stage]);
+  const focusBone = state.bones.find((bone) => bone.id === state.focusBone) ?? null;
+
+  function isGlowing(boneId: BoneLabel["id"]) {
+    return state.focusBone === boneId || (!state.focusBone && state.selectedBones.includes(boneId));
+  }
+
+  function isDimmed(boneId: BoneLabel["id"]) {
+    return Boolean(state.focusBone) && state.focusBone !== boneId && (state.stage === "s4c" || state.stage === "s4d");
+  }
+
   return (
-    <div>
-      <p className="mb-3 rounded-2xl bg-[#faf8f4] px-3 py-3">
-        {following ? `We are following ${following.label}. ` : ""}
-        {state.stage === "s4b"
-          ? "These are the six bones. Tap one. The five Whys start on the next screen, on that rib only."
-          : state.stage === "s4d"
-            ? "The Whys are on the rib you followed. Asha writes Obstacle and Insight. Maya places the pin."
-            : state.focusBone
-              ? `The five Whys grow on ${state.bones.find((bone) => bone.id === state.focusBone)?.label}. Each Why is the next card to the left.`
-              : "Tap one bone. The five Whys will line up on that rib, and the rib meets the backbone."}
+    <div className="grid gap-4">
+      <p className="rounded-2xl border border-[#e4dcd0] bg-[#faf8f4] px-3.5 py-3 text-sm leading-relaxed text-[#1c2430] sm:text-base">
+        {following ? `Following ${following.label}. ` : ""}
+        {state.stage === "s4a"
+          ? "Each bone is one kind of cause leading to the incident in the fish head. Pick a bone on the right and add a cause."
+          : state.stage === "s4b"
+            ? "Review the causes on all six bones, then tap the one bone the team will follow into the five Whys."
+            : state.stage === "s4d"
+              ? "Carry 1 to 3 causes forward into problem statements: Obstacle (cause) + Insight (root Why) + Harm (fish head)."
+              : focusBone
+                ? `Digging into ${focusBone.label}. Select a cause or Why below to grow the next Why, or mark one Why as the root cause.`
+                : "Tap one bone on the fish to open the five Whys branch below."}
       </p>
-      <div className="rounded-[2rem] border border-[#e4dcd0] bg-[#f6f1e8] p-3">
-        <div className="overflow-x-auto">
-        <div ref={rootRef} className="relative min-w-[54rem]">
-        <svg className="pointer-events-none absolute inset-0 h-full w-full overflow-visible" aria-hidden>
-          {ribLines.map((rib) => (
-            <g key={rib.id}>
-              <path
-                d={`M ${rib.x1} ${rib.y1} L ${rib.x2} ${rib.y2}`}
-                fill="none"
-                stroke={rib.stroke}
-                strokeWidth="3"
-                strokeLinecap="round"
-              />
-              <circle cx={rib.x1} cy={rib.y1} r="5" fill={rib.stroke} />
-            </g>
-          ))}
-        </svg>
-        <div className="relative grid items-center gap-y-4">
-          {top.map((bone, index) => (
-            <FishRib key={bone.id} fromHead={top.length - 1 - index} state={state} bone={bone} selected={selected} onSelect={onSelect} act={act} canMove={canMove} readOnly={readOnly} labelRef={(node) => { labelRefs.current[bone.id] = node; }} />
-          ))}
-          <div className="flex min-w-0 items-center">
-            <FishTail />
-            <div ref={spineRef} className="relative mx-1 h-4 min-w-0 flex-1">
-              <div className="absolute inset-x-0 top-1/2 h-1.5 -translate-y-1/2 rounded-full bg-[#1b2a4a]" />
-              <div className="absolute inset-0 flex items-center justify-between px-1">
-                {Array.from({ length: 7 }, (_, index) => (
-                  <span key={index} className="size-2.5 rounded-full border-2 border-[#1b2a4a] bg-[#f6f1e8]" />
-                ))}
-              </div>
+
+      <div className="rounded-[2rem] border border-[#e4dcd0] bg-[#f6f1e8] p-3 sm:p-4">
+        <div className="overflow-x-auto pb-1">
+          <div className="grid min-w-[700px] grid-cols-[44px_minmax(0,1fr)_232px] items-center gap-x-0">
+            {/* Top bone cards (Timing, Communication, Perceived value) */}
+            <div className="col-start-2 row-start-1 grid grid-cols-3 items-end gap-3">
+              {top.map((bone) => (
+                <FishBoneCard
+                  key={bone.id}
+                  state={state}
+                  bone={bone}
+                  position="top"
+                  glow={isGlowing(bone.id)}
+                  dim={isDimmed(bone.id)}
+                  selected={selected}
+                  onSelect={onSelect}
+                  act={act}
+                  canMove={canMove}
+                  readOnly={readOnly}
+                />
+              ))}
             </div>
-            <FishHead title={following ? `Fish head · ${following.label}` : "Fish head"} text={incident?.text ?? "Incident lands here"} />
+
+            {/* Top diagonal ribs SVG */}
+            <div className="col-start-2 row-start-2">
+              <svg viewBox="0 0 900 44" preserveAspectRatio="none" className="block h-11 w-full" aria-hidden>
+                {top.map((bone, index) => {
+                  const glow = isGlowing(bone.id);
+                  const dim = isDimmed(bone.id);
+                  const xTop = COL_CENTERS[index];
+                  const xSpine = TOP_RIB_ANCHORS[index] * 9;
+                  return (
+                    <line
+                      key={bone.id}
+                      x1={xTop}
+                      y1={0}
+                      x2={xSpine}
+                      y2={44}
+                      stroke={glow ? "#0E948C" : "#1b2a4a"}
+                      strokeWidth={glow ? 3 : 2.25}
+                      strokeLinecap="round"
+                      vectorEffect="non-scaling-stroke"
+                      opacity={dim ? 0.35 : 1}
+                    />
+                  );
+                })}
+              </svg>
+            </div>
+
+            {/* Fish tail */}
+            <div className="col-start-1 row-start-3 flex items-center justify-end">
+              <FishTail />
+            </div>
+
+            {/* Central spine */}
+            <div className="relative col-start-2 row-start-3 flex h-5 items-center">
+              <div className="h-1.5 w-full rounded-full bg-[#1b2a4a]" />
+              {top.map((bone, index) => {
+                const glow = isGlowing(bone.id);
+                const dim = isDimmed(bone.id);
+                return (
+                  <span
+                    key={bone.id}
+                    style={{ left: `${TOP_RIB_ANCHORS[index]}%` }}
+                    className={cn(
+                      "absolute top-1/2 size-3 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 transition-colors",
+                      glow ? "border-[#0E948C] bg-[#0E948C]" : "border-[#1b2a4a] bg-[#f6f1e8]",
+                      dim && "opacity-45",
+                    )}
+                    aria-hidden
+                  />
+                );
+              })}
+              {bottom.map((bone, index) => {
+                const glow = isGlowing(bone.id);
+                const dim = isDimmed(bone.id);
+                return (
+                  <span
+                    key={bone.id}
+                    style={{ left: `${BOTTOM_RIB_ANCHORS[index]}%` }}
+                    className={cn(
+                      "absolute top-1/2 size-3 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 transition-colors",
+                      glow ? "border-[#0E948C] bg-[#0E948C]" : "border-[#1b2a4a] bg-[#f6f1e8]",
+                      dim && "opacity-45",
+                    )}
+                    aria-hidden
+                  />
+                );
+              })}
+            </div>
+
+            {/* Fish head (spanning the spine corridor cleanly without text clipping) */}
+            <div className="col-start-3 row-start-2 row-end-5 -ml-1 flex items-center">
+              <FishHead
+                title={following ? `Following ${following.label}` : "Incident"}
+                text={incident?.text ?? "Incident lands here"}
+              />
+            </div>
+
+            {/* Bottom diagonal ribs SVG */}
+            <div className="col-start-2 row-start-4">
+              <svg viewBox="0 0 900 44" preserveAspectRatio="none" className="block h-11 w-full" aria-hidden>
+                {bottom.map((bone, index) => {
+                  const glow = isGlowing(bone.id);
+                  const dim = isDimmed(bone.id);
+                  const xBottom = COL_CENTERS[index];
+                  const xSpine = BOTTOM_RIB_ANCHORS[index] * 9;
+                  return (
+                    <line
+                      key={bone.id}
+                      x1={xBottom}
+                      y1={44}
+                      x2={xSpine}
+                      y2={0}
+                      stroke={glow ? "#0E948C" : "#1b2a4a"}
+                      strokeWidth={glow ? 3 : 2.25}
+                      strokeLinecap="round"
+                      vectorEffect="non-scaling-stroke"
+                      opacity={dim ? 0.35 : 1}
+                    />
+                  );
+                })}
+              </svg>
+            </div>
+
+            {/* Bottom bone cards (Process, Tools, Environment) */}
+            <div className="col-start-2 row-start-5 grid grid-cols-3 items-start gap-3">
+              {bottom.map((bone) => (
+                <FishBoneCard
+                  key={bone.id}
+                  state={state}
+                  bone={bone}
+                  position="bottom"
+                  glow={isGlowing(bone.id)}
+                  dim={isDimmed(bone.id)}
+                  selected={selected}
+                  onSelect={onSelect}
+                  act={act}
+                  canMove={canMove}
+                  readOnly={readOnly}
+                />
+              ))}
+            </div>
           </div>
-          {bottom.map((bone, index) => (
-            <FishRib key={bone.id} fromHead={index} state={state} bone={bone} selected={selected} onSelect={onSelect} act={act} canMove={canMove} readOnly={readOnly} labelRef={(node) => { labelRefs.current[bone.id] = node; }} />
-          ))}
-        </div>
-        </div>
         </div>
       </div>
+
       {tray.length > 0 && (
-        <div className="mt-3">
-          <div className="mb-2 font-semibold">Not on a bone yet</div>
+        <div className="rounded-2xl border border-[#e4dcd0] bg-[#faf8f4] p-3">
+          <div className="mb-2 text-sm font-semibold text-[#1c2430]">Not on a bone yet</div>
           <div className="flex flex-wrap gap-2">
             {tray.map((cause) => (
               <button
                 key={cause.id}
                 type="button"
                 onClick={() => onSelect(selected === cause.id ? null : cause.id)}
-                className={cn("rounded-xl border-2 bg-white px-3 py-2 text-left", selected === cause.id && "ring-2 ring-[#1e2a44]")}
+                className={cn(
+                  "min-h-10 rounded-xl border bg-white px-3 py-2 text-left text-sm font-medium text-[#1c2430] transition-colors",
+                  selected === cause.id ? "border-[#1e2a44] ring-2 ring-[#1e2a44]" : "border-[#e4dcd0] hover:border-[#1e2a44]/50",
+                )}
               >
                 {cause.text}
               </button>
@@ -724,207 +822,577 @@ function Fish({
           </div>
         </div>
       )}
+
+      {state.stage === "s4b" && focusBone && (
+        <div className="rounded-2xl border border-[#0E948C]/40 bg-[#f1fbf9] px-4 py-3 text-sm text-[#0c6b65]">
+          <span className="font-semibold">Following {focusBone.label}</span> · {BONE_HINTS[focusBone.id]} The five Whys open on this bone in the next step.
+        </div>
+      )}
+
+      {(state.stage === "s4c" || state.stage === "s4d") && (
+        <RootCauseWorkspace
+          state={state}
+          selected={selected}
+          onSelect={onSelect}
+          act={act}
+          role={role}
+          readOnly={readOnly}
+        />
+      )}
     </div>
   );
 }
 
-function whyChain(state: RoomState, causeId: string) {
-  const line: RoomState["hops"] = [];
-  let id = causeId;
-  while (line.length < 5) {
-    const children = state.hops.filter((hop) => hop.parentId === id && !hop.proposed);
-    if (children.length === 0) break;
-    const next = children[children.length - 1];
-    line.push(next);
-    id = next.id;
-  }
-  return line;
-}
-
-function FishRib({
+function FishBoneCard({
   state,
   bone,
-  fromHead,
+  position,
+  glow,
+  dim,
   selected,
   onSelect,
   act,
   canMove,
   readOnly,
-  labelRef,
 }: {
   state: RoomState;
-  bone: RoomState["bones"][number];
-  fromHead: number;
+  bone: BoneLabel;
+  position: "top" | "bottom";
+  glow: boolean;
+  dim: boolean;
   selected: string | null;
   onSelect: (id: string | null) => void;
   act: (action: Action) => void;
   canMove: boolean;
   readOnly: boolean;
-  labelRef: (node: HTMLDivElement | null) => void;
 }) {
   const causes = state.causes.filter((cause) => cause.bone === bone.id);
   const followed = state.focusBone === bone.id;
-  const glow = followed || (!state.focusBone && state.selectedBones.includes(bone.id));
-  const dim = Boolean(state.focusBone) && !followed && (state.stage === "s4c" || state.stage === "s4d");
-  const stroke = glow ? "#0E948C" : "#1b2a4a";
-  const canFollow = !readOnly && (state.stage === "s4b" || state.stage === "s4c");
-  const chainCause = causes.find((cause) => state.hops.some((hop) => hop.bone === bone.id && hop.parentId === cause.id)) ?? causes[0];
-  const chain = chainCause && followed ? whyChain(state, chainCause.id) : [];
-  const placedPin = state.pins.find((pin) => pin.bone === bone.id && pin.placed && !pin.blocked);
-  const placedCause = placedPin ? state.causes.find((cause) => cause.id === placedPin.causeId) : undefined;
+  const followAllowed = state.selectedBones.length === 0 || state.selectedBones.includes(bone.id);
+  const canFollow = !readOnly && (state.stage === "s4b" || state.stage === "s4c") && followAllowed;
+  const placedPins = state.pins.filter((pin) => pin.bone === bone.id && pin.placed && !pin.blocked);
+  const draftPins = state.pins.filter((pin) => pin.bone === bone.id && !pin.placed && !pin.blocked);
+
+  const stem = (
+    <div className="flex justify-center" aria-hidden>
+      <span className={cn("h-2.5 w-0.5 transition-colors", glow ? "bg-[#0E948C]" : "bg-[#1b2a4a]")} />
+    </div>
+  );
+
   return (
-    <div className={cn("flex min-w-0 items-center", dim && "opacity-40")} style={{ paddingRight: `calc(13rem + ${fromHead * 12}rem)` }}>
-      <div className="min-w-0 flex-1 overflow-x-auto">
-        <div className="flex w-max min-w-full items-center justify-end">
-            {causes.length === 0 && <p className="text-sm leading-none text-muted-foreground">Nothing on this bone yet.</p>}
-            {causes.map((cause) => (
-              <div key={cause.id} className="flex flex-nowrap items-center">
-                {(!followed || cause.id !== chainCause?.id) && (
-                  <WhyTrail state={state} parentId={cause.id} selected={selected} onSelect={onSelect} />
-                )}
-                {followed && cause.id === chainCause?.id &&
-                  [...chain].reverse().map((hop) => (
-                    <div key={hop.id} className="flex items-center">
-                      <BranchCard
-                        title={hop.text}
-                        meta={[hop.chip ? CHIP_LABEL[hop.chip] : "Why", hop.root ? "Root cause" : "", hop.askWhom ? `Ask ${hop.askWhom}` : ""].filter(Boolean).join(" · ")}
-                        selected={selected === hop.id}
-                        onClick={() => onSelect(selected === hop.id ? null : hop.id)}
-                        pinned={Boolean(placedPin && (hop.root || hop.id === placedPin.hopId))}
-                      />
-                      <span className="mx-1 flex shrink-0 items-center" aria-hidden>
-                        <span className="h-0.5 w-4 rounded-full bg-[#1b2a4a]" />
-                        <span className="size-2.5 rounded-full border-2 border-[#1b2a4a] bg-[#fffdf8]" />
-                      </span>
-                    </div>
-                  ))}
-                <BranchCard
-                  title={cause.text}
-                  meta={[person(state, cause.authorId)?.name, state.pins.find((pin) => pin.causeId === cause.id && pin.placed) ? "Pin placed" : ""].filter(Boolean).join(" · ")}
-                  selected={selected === cause.id}
-                  onClick={() => onSelect(selected === cause.id ? null : cause.id)}
-                  pinned={state.pins.some((pin) => pin.causeId === cause.id && pin.placed && !pin.blocked)}
-                />
-              </div>
-            ))}
+    <div className={cn("flex min-w-0 flex-col transition-opacity", dim && "opacity-55 hover:opacity-90")}>
+      {position === "bottom" && stem}
+      <div
+        className={cn(
+          "rounded-2xl border bg-white p-3 transition-colors",
+          followed
+            ? "border-2 border-[#0E948C] bg-[#f4fbfa]"
+            : placedPins.length > 0
+              ? "border-2 border-[#7A45D6]"
+              : glow
+                ? "border-[#0E948C]"
+                : "border-[#e4dcd0]",
+        )}
+      >
+        <div className="flex items-start justify-between gap-2">
+          <div className="min-w-0">
+            <div className={cn("text-sm font-semibold leading-snug", glow ? "text-[#0E948C]" : "text-[#1c2430]")}>
+              {bone.label}
+            </div>
+            <p className="mt-0.5 text-xs leading-snug text-[#5c6570]">{BONE_HINTS[bone.id]}</p>
           </div>
+          {placedPins.length > 0 && (
+            <span className="inline-flex shrink-0 items-center gap-1 rounded-lg bg-[#f3eefe] px-2 py-0.5 text-xs font-semibold text-[#7A45D6]">
+              <PinIcon className="size-3" aria-hidden />
+              Pinned
+            </span>
+          )}
+          {placedPins.length === 0 && draftPins.length > 0 && state.stage === "s4d" && (
+            <span className="shrink-0 rounded-lg bg-[#faf8f4] px-2 py-0.5 text-xs font-medium text-[#7A45D6]">
+              Draft pin
+            </span>
+          )}
         </div>
-      <div className="h-0.5 w-5 shrink-0 rounded-full" style={{ background: stroke }} aria-hidden />
-      <div ref={labelRef} className="w-36 shrink-0 text-right">
-        {canFollow ? (
-          <button type="button" className="text-right" onClick={() => act({ type: "follow-bone", id: bone.id })}>
-            <div className={cn("font-semibold leading-none", glow && "text-[#0E948C]")}>{bone.label}</div>
-            <p className="pt-1 text-sm leading-tight text-[#5c6570]">{followed ? "We follow this bone" : "Tap to follow"}</p>
+
+        <div className="mt-2.5 grid gap-1.5">
+          {causes.length === 0 ? (
+            <p className="rounded-xl border border-dashed border-[#e4dcd0] bg-[#faf8f4] px-2.5 py-2 text-xs text-[#64748b]">
+              No causes yet
+            </p>
+          ) : (
+            causes.map((cause) => {
+              const owner = person(state, cause.authorId);
+              const ownerColor = owner?.role ? ROLES[owner.role].color : "#94a3b8";
+              const hopCount = countDescendantHops(state.hops, cause.id);
+              const rootFound = hasDescendantRoot(state.hops, cause.id);
+              const isPinned = state.pins.some((pin) => pin.causeId === cause.id && pin.placed && !pin.blocked);
+              const isSelected = selected === cause.id;
+
+              return (
+                <button
+                  key={cause.id}
+                  type="button"
+                  onClick={() => onSelect(isSelected ? null : cause.id)}
+                  className={cn(
+                    "w-full rounded-xl border bg-[#fffdf8] px-2.5 py-2 text-left transition-colors",
+                    isPinned
+                      ? "border-[#7A45D6] bg-[#faf7ff]"
+                      : isSelected
+                        ? "border-[#1e2a44] ring-2 ring-[#1e2a44]"
+                        : "border-[#e4dcd0] hover:border-[#1e2a44]/40",
+                  )}
+                >
+                  <span className="block text-xs font-medium leading-snug text-[#1c2430] sm:text-sm">{cause.text}</span>
+                  <span className="mt-1 flex flex-wrap items-center gap-x-1.5 gap-y-0.5 text-xs text-[#5c6570]">
+                    <span className="inline-flex items-center gap-1">
+                      <span className="size-1.5 rounded-full" style={{ backgroundColor: ownerColor }} aria-hidden />
+                      {owner?.name ?? "Team"}
+                    </span>
+                    {cause.evidence && <span className="text-[#0E948C]">· Quote</span>}
+                    {cause.dailyPain && <span className="text-[#7A45D6]">· Daily pain</span>}
+                    {cause.blame && <span className="text-[#E25B4A]">· Blame</span>}
+                    {cause.vague && <span className="text-[#E25B4A]">· Vague</span>}
+                    {hopCount > 0 && (
+                      <span className="font-medium text-[#0E948C]">
+                        · {hopCount} {hopCount === 1 ? "Why" : "Whys"}
+                      </span>
+                    )}
+                    {rootFound && <span className="font-semibold text-[#0E948C]">· Root</span>}
+                  </span>
+                </button>
+              );
+            })
+          )}
+        </div>
+
+        {canFollow && (
+          <button
+            type="button"
+            onClick={() => act({ type: "follow-bone", id: bone.id })}
+            aria-pressed={followed}
+            className={cn(
+              "mt-2.5 min-h-10 w-full rounded-xl border px-2.5 py-1.5 text-xs font-semibold transition-colors",
+              followed
+                ? "border-[#0E948C] bg-[#0E948C] text-white"
+                : "border-[#d8d0c3] bg-[#faf8f4] text-[#1c2430] hover:border-[#0E948C] hover:text-[#0E948C]",
+            )}
+          >
+            {followed ? "Following this bone" : "Follow this bone"}
           </button>
-        ) : (
-          <>
-            <div className={cn("font-semibold leading-none", glow && "text-[#0E948C]")}>{bone.label}</div>
-            <p className="pt-1 text-sm leading-tight text-[#5c6570]">{BONE_HINTS[bone.id]}</p>
-          </>
         )}
-        {placedPin && (
-          <div className="mt-2 rounded-xl bg-[#7A45D6] px-2 py-1 text-left text-sm text-white">
-            <div className="font-semibold">Pin on {placedCause?.text ?? bone.label}</div>
-            {placedPin.insight && <div>Root: {placedPin.insight}</div>}
-          </div>
-        )}
+
         {canMove && selected && (
-          <button type="button" className="mt-2 h-11 rounded-xl bg-[#1e2a44] px-3 text-sm text-white" onClick={() => act({ type: "snap", id: selected, bone: bone.id })}>
-            Move here
+          <button
+            type="button"
+            onClick={() => act({ type: "snap", id: selected, bone: bone.id })}
+            className="mt-2.5 min-h-10 w-full rounded-xl bg-[#1e2a44] px-3 py-1.5 text-xs font-semibold text-white hover:bg-[#2a3b5e]"
+          >
+            Move selected here
           </button>
         )}
       </div>
+      {position === "top" && stem}
     </div>
   );
 }
 
-const CHIP_LABEL = { evidence: "Evidence", assumption: "Assumption", "need-to-check": "Need to check" } as const;
-
-function WhyTrail({
+function RootCauseWorkspace({
   state,
-  parentId,
   selected,
   onSelect,
+  act,
+  role,
+  readOnly,
+}: {
+  state: RoomState;
+  selected: string | null;
+  onSelect: (id: string | null) => void;
+  act: (action: Action) => void;
+  role: RoleId | null;
+  readOnly: boolean;
+}) {
+  const focusBone = state.bones.find((bone) => bone.id === state.focusBone) ?? null;
+  const incident = lockedIncident(state);
+  const stageIsWhy = state.stage === "s4c";
+
+  if (!focusBone) {
+    const candidateBones = state.bones.filter((bone) =>
+      state.selectedBones.length > 0 ? state.selectedBones.includes(bone.id) : state.causes.some((cause) => cause.bone === bone.id),
+    );
+    return (
+      <div className="rounded-3xl border-2 border-dashed border-[#0E948C]/40 bg-[#faf8f4] p-5 text-center">
+        <div className="text-base font-semibold text-[#1c2430]">Pick one bone above to open the five Whys</div>
+        <p className="mt-1 text-sm text-[#5c6570]">
+          Tap any bone on the fishbone (or choose one below) so the team can trace causes to a root cause.
+        </p>
+        {!readOnly && candidateBones.length > 0 && (
+          <div className="mt-3 flex flex-wrap justify-center gap-2">
+            {candidateBones.map((bone) => (
+              <button
+                key={bone.id}
+                type="button"
+                onClick={() => act({ type: "follow-bone", id: bone.id })}
+                className="min-h-10 rounded-xl border border-[#0E948C] bg-white px-3.5 py-2 text-sm font-semibold text-[#0E948C] hover:bg-[#0E948C] hover:text-white"
+              >
+                Follow {bone.label}
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  const boneCauses = state.causes.filter((cause) => cause.bone === focusBone.id);
+  const boneHops = state.hops.filter((hop) => hop.bone === focusBone.id && !hop.proposed);
+  const pendingProposals = state.hops.filter((hop) => hop.bone === focusBone.id && hop.proposed);
+  const markedRoot = boneHops.find((hop) => hop.root);
+  const activePins = state.pins.filter((pin) => !pin.blocked);
+  const extraPins = activePins.filter((pin) => pin.bone !== focusBone.id);
+
+  return (
+    <div className="relative">
+      <div className="mx-auto h-4 w-0.5 bg-[#0E948C]" aria-hidden />
+      <section className="rounded-3xl border-2 border-[#0E948C]/50 bg-white p-4 sm:p-5">
+        <div className="flex flex-wrap items-start justify-between gap-3 border-b border-[#efeae1] pb-3">
+          <div>
+            <div className="text-xs font-semibold uppercase tracking-wide text-[#0E948C]">
+              {stageIsWhy ? "5 Whys · Root cause analysis" : "Carry forward · Pins & root cause"}
+            </div>
+            <h3 className="mt-0.5 text-lg font-semibold text-[#1c2430]">
+              Following: {focusBone.label}
+            </h3>
+            <p className="text-sm text-[#5c6570]">{BONE_HINTS[focusBone.id]}</p>
+          </div>
+          <div className="text-right text-sm text-[#5c6570]">
+            <div>
+              {boneCauses.length} {boneCauses.length === 1 ? "cause" : "causes"} · {boneHops.length}{" "}
+              {boneHops.length === 1 ? "Why" : "Whys"}
+            </div>
+            <div className={cn("font-medium", markedRoot ? "text-[#0E948C]" : "text-[#8A5A08]")}>
+              {markedRoot ? "Root cause marked" : "No root cause marked yet"}
+            </div>
+          </div>
+        </div>
+
+        {boneCauses.length === 0 ? (
+          <p className="mt-4 rounded-2xl bg-[#faf8f4] px-4 py-3 text-sm text-[#5c6570]">
+            No causes sit on {focusBone.label} yet. Tap a different bone that has causes, or add one first.
+          </p>
+        ) : (
+          <div className="mt-4 grid gap-5">
+            {boneCauses.map((cause, causeIndex) => {
+              const owner = person(state, cause.authorId);
+              const ownerColor = owner?.role ? ROLES[owner.role].color : "#94a3b8";
+              const isCauseSelected = selected === cause.id;
+              const directHops = state.hops.filter((hop) => hop.parentId === cause.id && !hop.proposed);
+              const pinForCause = activePins.find((pin) => pin.causeId === cause.id);
+              const blockedPin = state.pins.find((pin) => pin.causeId === cause.id && pin.blocked);
+
+              return (
+                <div key={cause.id} className="rounded-2xl border border-[#e4dcd0] bg-[#faf8f4] p-3.5 sm:p-4">
+                  <button
+                    type="button"
+                    onClick={() => onSelect(isCauseSelected ? null : cause.id)}
+                    className={cn(
+                      "w-full rounded-xl border bg-white p-3 text-left transition-colors",
+                      pinForCause?.placed
+                        ? "border-[#7A45D6] bg-[#faf7ff]"
+                        : isCauseSelected
+                          ? "border-[#1e2a44] ring-2 ring-[#1e2a44]"
+                          : "border-[#e4dcd0] hover:border-[#1e2a44]/50",
+                    )}
+                  >
+                    <div className="flex flex-wrap items-center justify-between gap-2">
+                      <span className="text-xs font-semibold uppercase tracking-wide text-[#5c6570]">
+                        Cause {boneCauses.length > 1 ? causeIndex + 1 : ""} on {focusBone.label}
+                      </span>
+                      <span className="flex items-center gap-2 text-xs text-[#5c6570]">
+                        <span className="inline-flex items-center gap-1">
+                          <span className="size-2 rounded-full" style={{ backgroundColor: ownerColor }} aria-hidden />
+                          {owner?.name ?? "Team"}
+                        </span>
+                        {pinForCause?.placed && (
+                          <span className="inline-flex items-center gap-1 font-semibold text-[#7A45D6]">
+                            <PinIcon className="size-3.5" aria-hidden />
+                            Pinned
+                          </span>
+                        )}
+                      </span>
+                    </div>
+                    <div className="mt-1 text-base font-semibold text-[#1c2430]">{cause.text}</div>
+                    {cause.evidence && (
+                      <div className="mt-2 flex items-start gap-1.5 rounded-lg bg-[#f1fbf9] px-2.5 py-1.5 text-sm text-[#0c6b65]">
+                        <MessageSquareQuote className="mt-0.5 size-4 shrink-0" aria-hidden />
+                        <span>“{cause.evidence}”</span>
+                      </div>
+                    )}
+                    {(cause.dailyPain || cause.blame || cause.vague) && (
+                      <div className="mt-2 flex flex-wrap gap-x-3 gap-y-1 text-xs font-medium">
+                        {cause.dailyPain && <span className="text-[#7A45D6]">Daily pain</span>}
+                        {cause.blame && <span className="text-[#E25B4A]">Marked as blame</span>}
+                        {cause.vague && <span className="text-[#E25B4A]">Marked as vague</span>}
+                      </div>
+                    )}
+                    {isCauseSelected && stageIsWhy && (
+                      <div className="mt-2 text-xs font-semibold text-[#1e2a44]">
+                        Selected — Why 1 grows from this cause
+                      </div>
+                    )}
+                  </button>
+
+                  {directHops.length > 0 ? (
+                    <div className="mt-3 pl-2 sm:pl-4">
+                      <WhyBranchList
+                        state={state}
+                        parentId={cause.id}
+                        depth={1}
+                        selected={selected}
+                        onSelect={onSelect}
+                        role={role}
+                        stage={state.stage}
+                        pinForCause={pinForCause}
+                      />
+                    </div>
+                  ) : (
+                    <div className="mt-3 flex items-center gap-2 pl-3 text-sm text-[#5c6570]">
+                      <CornerDownRight className="size-4 shrink-0 text-[#0E948C]" aria-hidden />
+                      <span>
+                        {stageIsWhy
+                          ? "No Why hops on this cause yet. Tap this cause, then write Why 1 on the right."
+                          : "No Why hops added under this cause."}
+                      </span>
+                    </div>
+                  )}
+
+                  {state.stage === "s4d" && (pinForCause || blockedPin) && (
+                    <PinCarryCard
+                      pin={pinForCause ?? blockedPin!}
+                      causeText={cause.text}
+                      harmText={incident?.text ?? "Incident in the fish head"}
+                    />
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        )}
+
+        {pendingProposals.length > 0 && (
+          <div className="mt-4 rounded-2xl border border-[#e4dcd0] bg-[#faf8f4] px-3.5 py-2.5 text-sm text-[#5c6570]">
+            <span className="font-semibold text-[#1c2430]">Waiting for Insight Extractor:</span>{" "}
+            {pendingProposals.map((hop) => `“${hop.text}”`).join(" · ")}
+          </div>
+        )}
+
+        {state.stage === "s4d" && extraPins.length > 0 && (
+          <div className="mt-4 grid gap-3 border-t border-[#efeae1] pt-4">
+            <div className="text-xs font-semibold uppercase tracking-wide text-[#7A45D6]">
+              Pins from other bones
+            </div>
+            {extraPins.map((pin) => {
+              const cause = state.causes.find((item) => item.id === pin.causeId);
+              return (
+                <PinCarryCard
+                  key={pin.id}
+                  pin={pin}
+                  causeText={cause?.text ?? "Cause"}
+                  harmText={incident?.text ?? "Incident in the fish head"}
+                />
+              );
+            })}
+          </div>
+        )}
+      </section>
+    </div>
+  );
+}
+
+function WhyBranchList({
+  state,
+  parentId,
+  depth,
+  selected,
+  onSelect,
+  role,
+  stage,
+  pinForCause,
 }: {
   state: RoomState;
   parentId: string;
+  depth: number;
   selected: string | null;
   onSelect: (id: string | null) => void;
+  role: RoleId | null;
+  stage: RoomState["stage"];
+  pinForCause?: Pin;
 }) {
   const hops = state.hops.filter((hop) => hop.parentId === parentId && !hop.proposed);
   if (hops.length === 0) return null;
-  const line = [...hops].reverse();
+
   return (
-    <div className="flex flex-nowrap items-center gap-2">
-      {line.map((hop) => (
-        <div key={hop.id} className="flex flex-nowrap items-center gap-2">
-          <WhyTrail state={state} parentId={hop.id} selected={selected} onSelect={onSelect} />
-          <BranchCard
-            title={hop.text}
-            meta={hop.chip ? `${CHIP_LABEL[hop.chip]}${hop.askWhom ? ` · Ask ${hop.askWhom}` : ""}` : "Why"}
-            selected={selected === hop.id}
-            onClick={() => onSelect(selected === hop.id ? null : hop.id)}
-          />
-          <span className="mx-1 flex shrink-0 items-center self-center" aria-hidden>
-            <span className="h-0.5 w-4 rounded-full bg-[#1b2a4a]" />
-            <span className="size-2.5 rounded-full border-2 border-[#1b2a4a] bg-[#fffdf8]" />
-          </span>
-        </div>
-      ))}
+    <div className="grid gap-2.5 border-l-2 border-[#0E948C]/40 pl-3 sm:pl-4">
+      {hops.map((hop) => {
+        const isSelected = selected === hop.id;
+        const isRoot = Boolean(hop.root);
+        const isPinnedHop = Boolean(pinForCause?.placed && (isRoot || pinForCause.hopId === hop.id));
+        const children = state.hops.filter((item) => item.parentId === hop.id && !item.proposed);
+
+        return (
+          <div key={hop.id} className="grid gap-2">
+            <button
+              type="button"
+              onClick={() => onSelect(isSelected ? null : hop.id)}
+              className={cn(
+                "w-full rounded-xl border p-3 text-left transition-colors",
+                isRoot
+                  ? "border-2 border-[#0E948C] bg-[#eefaf8]"
+                  : isPinnedHop
+                    ? "border-2 border-[#7A45D6] bg-[#faf7ff]"
+                    : "border-[#e4dcd0] bg-white hover:border-[#0E948C]/60",
+                isSelected && "ring-2 ring-[#1e2a44]",
+              )}
+            >
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs">
+                  <span className={cn("font-semibold", isRoot ? "text-[#0c6b65]" : "text-[#0E948C]")}>
+                    Why {depth}
+                  </span>
+                  {hop.chip && <span className="text-[#5c6570]">· {CHIP_LABEL[hop.chip]}</span>}
+                  {hop.askWhom && <span className="font-medium text-[#1c2430]">· Ask {hop.askWhom}</span>}
+                </div>
+                <div className="flex items-center gap-2 text-xs">
+                  {isRoot && (
+                    <span className="inline-flex items-center gap-1 font-semibold text-[#0c6b65]">
+                      <Target className="size-3.5" aria-hidden />
+                      Root cause
+                    </span>
+                  )}
+                  {isPinnedHop && (
+                    <span className="inline-flex items-center gap-1 font-semibold text-[#7A45D6]">
+                      <CheckCircle2 className="size-3.5" aria-hidden />
+                      Carried to statement
+                    </span>
+                  )}
+                </div>
+              </div>
+
+              <div className="mt-1 text-sm font-semibold leading-snug text-[#1c2430] sm:text-base">{hop.text}</div>
+
+              {isSelected && stage === "s4c" && (
+                <div className="mt-2 text-xs font-semibold text-[#1e2a44]">
+                  {depth >= 5
+                    ? "Selected — 5 Whys reached"
+                    : `Selected — Why ${depth + 1} grows from here`}
+                  {role === "insight" ? (isRoot ? " (marked as root cause)" : " · or mark as root cause on the right") : ""}
+                </div>
+              )}
+            </button>
+
+            {children.length > 0 && (
+              <WhyBranchList
+                state={state}
+                parentId={hop.id}
+                depth={depth + 1}
+                selected={selected}
+                onSelect={onSelect}
+                role={role}
+                stage={stage}
+                pinForCause={pinForCause}
+              />
+            )}
+          </div>
+        );
+      })}
     </div>
   );
 }
 
-function BranchCard({
-  title,
-  meta,
-  selected,
-  onClick,
-  pinned,
+function PinCarryCard({
+  pin,
+  causeText,
+  harmText,
 }: {
-  title: string;
-  meta: string;
-  selected: boolean;
-  onClick: () => void;
-  pinned?: boolean;
+  pin: Pin;
+  causeText: string;
+  harmText: string;
 }) {
   return (
-    <button
-      type="button"
-      onClick={onClick}
-      className={cn("w-44 shrink-0 rounded-2xl border bg-[#fffdf8] px-3 py-2 text-left shadow-[2px_2px_0_rgba(30,42,68,0.08)]", pinned ? "border-[#7A45D6] ring-2 ring-[#7A45D6]" : "border-[#e4dcd0]", selected && "border-[#1e2a44] ring-2 ring-[#1e2a44]")}
+    <div
+      className={cn(
+        "mt-3 rounded-xl border p-3 text-sm",
+        pin.blocked
+          ? "border-[#E25B4A] bg-[#fdeceb]"
+          : pin.placed
+            ? "border-[#7A45D6] bg-[#faf7ff]"
+            : "border-[#d9c8f5] bg-white",
+      )}
     >
-      {pinned && <span className="mb-1 inline-block rounded-full bg-[#7A45D6] px-2 py-0.5 text-sm text-white">Pin</span>}
-      <span className="block font-semibold">{title}</span>
-      <span className="mt-1 block text-sm text-muted-foreground">{meta}</span>
-      {selected && <span className="mt-1 block text-sm">Next Why grows from here</span>}
-    </button>
+      <div className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide">
+        <PinIcon
+          className={cn("size-3.5", pin.blocked ? "text-[#E25B4A]" : "text-[#7A45D6]")}
+          aria-hidden
+        />
+        <span className={pin.blocked ? "text-[#E25B4A]" : "text-[#7A45D6]"}>
+          {pin.blocked
+            ? "Pin blocked — replace or override"
+            : pin.placed
+              ? "Pinned to carry forward"
+              : "Draft pin — waiting for Theme Mapper to place"}
+        </span>
+      </div>
+      <dl className="mt-2 grid gap-1.5 sm:grid-cols-3">
+        <div className="rounded-lg bg-white/80 px-2.5 py-2">
+          <dt className="text-xs font-medium text-[#5c6570]">Obstacle (from cause)</dt>
+          <dd className="mt-0.5 text-sm font-medium text-[#1c2430]">
+            {pin.obstacle || causeText}
+            {!pin.obstacleSet && <span className="ml-1 text-xs text-[#8A5A08]">(unsaved)</span>}
+          </dd>
+        </div>
+        <div className="rounded-lg bg-white/80 px-2.5 py-2">
+          <dt className="text-xs font-medium text-[#5c6570]">Insight (from root Why)</dt>
+          <dd className="mt-0.5 text-sm font-medium text-[#1c2430]">
+            {pin.insight || "Mark a root Why and save labels"}
+            {!pin.insightSet && pin.insight && <span className="ml-1 text-xs text-[#8A5A08]">(unsaved)</span>}
+          </dd>
+        </div>
+        <div className="rounded-lg bg-white/80 px-2.5 py-2">
+          <dt className="text-xs font-medium text-[#5c6570]">Harm (from fish head)</dt>
+          <dd className="mt-0.5 text-sm font-medium text-[#1c2430]">{harmText}</dd>
+        </div>
+      </dl>
+    </div>
   );
 }
 
 function FishTail() {
   return (
-    <svg width="72" height="78" viewBox="0 0 72 78" aria-hidden className="shrink-0">
-      <path d="M64,39 C46,39 28,22 8,6 C24,24 26,34 10,39 C26,44 24,54 8,72 C28,56 46,39 64,39 Z" fill="#1b2a4a" />
-      <path d="M58,39 C46,32 40,26 34,18" fill="none" stroke="#f6f1e8" strokeWidth="1.5" opacity="0.45" />
-      <path d="M58,39 C46,46 40,52 34,60" fill="none" stroke="#f6f1e8" strokeWidth="1.5" opacity="0.45" />
+    <svg width="44" height="58" viewBox="0 0 44 58" aria-hidden className="shrink-0">
+      <path d="M44,29 C32,29 19,17 4,4 C15,17 17,24 6,29 C17,34 15,41 4,54 C19,41 32,29 44,29 Z" fill="#1b2a4a" />
+      <path d="M40,29 C31,24 27,19 22,13" fill="none" stroke="#f6f1e8" strokeWidth="1.5" opacity="0.4" />
+      <path d="M40,29 C31,34 27,39 22,45" fill="none" stroke="#f6f1e8" strokeWidth="1.5" opacity="0.4" />
     </svg>
   );
 }
 
 function FishHead({ title, text }: { title: string; text: string }) {
   return (
-    <div className="relative w-40 shrink-0">
-      <svg viewBox="0 0 288 156" className="h-24 w-full" aria-hidden>
-        <path d="M6,78 C6,26 78,6 156,14 C214,20 262,48 278,78 C262,108 214,136 156,142 C78,150 6,130 6,78 Z" fill="#1b2a4a" />
-        <path d="M34,46 C86,62 86,94 34,110" fill="none" stroke="#d5dceb" strokeWidth="2" opacity="0.75" />
-        <circle cx="214" cy="62" r="10" fill="#f6f1e8" />
-        <circle cx="217" cy="62" r="4.5" fill="#1b2a4a" />
-        <circle cx="218.5" cy="60.5" r="1.5" fill="#f6f1e8" />
+    <div className="relative min-h-[120px] w-full shrink-0">
+      <svg viewBox="0 0 240 128" preserveAspectRatio="none" className="absolute inset-0 h-full w-full" aria-hidden>
+        <path
+          d="M2,64 C2,18 68,4 134,10 C186,15 224,40 238,64 C224,88 186,113 134,118 C68,124 2,110 2,64 Z"
+          fill="#1b2a4a"
+        />
+        <path d="M22,36 C56,52 56,76 22,92" fill="none" stroke="#d5dceb" strokeWidth="2" opacity="0.28" />
       </svg>
-      <div className="absolute inset-y-0 left-5 right-24 flex flex-col justify-center text-white">
-        <div className="text-xs text-white/70">{title}</div>
-        <div className="line-clamp-4 text-sm leading-snug">{text}</div>
+      <svg width="20" height="20" viewBox="0 0 20 20" className="absolute right-5 top-5 z-10" aria-hidden>
+        <circle cx="10" cy="10" r="8" fill="#f6f1e8" />
+        <circle cx="11.5" cy="10" r="3.8" fill="#1b2a4a" />
+        <circle cx="12.5" cy="8.8" r="1.3" fill="#f6f1e8" />
+      </svg>
+      <div className="relative z-10 flex min-h-[120px] flex-col justify-center pl-6 pr-11 py-3.5 text-white">
+        <div className="text-xs font-medium text-white/75">{title}</div>
+        <div className="mt-1 text-sm font-semibold leading-snug">{text}</div>
       </div>
     </div>
   );
