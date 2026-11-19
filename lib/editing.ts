@@ -22,7 +22,7 @@ export function editBanner(state: RoomState, role: RoleId | null): { you: string
   if (stage === "s2") {
     if (role === "mapper") return { you: "Drag each card into a quadrant. Then the Lead Interviewer chooses who we follow.", board: "Only you can move cards." };
     if (role === "interviewer") return { you: "Choose one person on the map. That is who the incident and the fish are about.", board: `Only ${holder(state, "mapper")} moves cards. You choose who we follow.` };
-    return { you: "You can vote. You cannot move cards or choose who we follow.", board: `${holder(state, "mapper")} moves cards. ${holder(state, "interviewer")} chooses who we follow.` };
+    return { you: "You are watching. You cannot move cards or choose who we follow.", board: `${holder(state, "mapper")} moves cards. ${holder(state, "interviewer")} chooses who we follow.` };
   }
   if (stage === "s3") {
     const who = state.stakeholders.find((card) => card.id === state.summary.whoseId)?.label;

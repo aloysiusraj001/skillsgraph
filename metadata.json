@@ -1,0 +1,8 @@
+{
+  "name": "C60 · What's the problem",
+  "description": "A shared classroom board for five students and one teacher. Map who is affected, why it happens, and three five-blank problem statements.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

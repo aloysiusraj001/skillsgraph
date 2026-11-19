@@ -1,0 +1,107 @@
+{
+  "entities": {
+    "DemoSessionPointer": {
+      "title": "DemoSessionPointer",
+      "description": "Points to the active demo workshop room code so different browsers can join without sign-in.",
+      "type": "object",
+      "properties": {
+        "activeCode": {
+          "type": "string",
+          "description": "Active 4-to-6 character room code.",
+          "minLength": 4,
+          "maxLength": 6,
+          "pattern": "^[A-Z0-9]{4,6}$"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp of the latest active workshop."
+        }
+      },
+      "required": ["activeCode", "updatedAt"]
+    },
+    "Room": {
+      "title": "Room",
+      "description": "A C60 classroom room document holding the shared board state.",
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "string",
+          "description": "Four-to-six character room code.",
+          "minLength": 4,
+          "maxLength": 6,
+          "pattern": "^[A-Z0-9]{4,6}$"
+        },
+        "teamName": {
+          "type": "string",
+          "description": "Team display name.",
+          "minLength": 1,
+          "maxLength": 40
+        },
+        "theme": {
+          "type": "string",
+          "description": "Classroom activity theme.",
+          "minLength": 1,
+          "maxLength": 80
+        },
+        "stage": {
+          "type": "string",
+          "description": "Current C60 activity stage.",
+          "enum": ["s0", "s1", "s1b", "s2", "s3", "s4a", "s4b", "s4c", "s4d", "s5", "s6", "s7"]
+        },
+        "version": {
+          "type": "integer",
+          "description": "Monotonically increasing optimistic concurrency version."
+        },
+        "state": {
+          "type": "object",
+          "description": "Full RoomState map synchronized across the team."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp when room was created."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp when room was last updated."
+        }
+      },
+      "required": [
+        "code",
+        "teamName",
+        "theme",
+        "stage",
+        "version",
+        "state",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "TestConnection": {
+      "title": "TestConnection",
+      "description": "Connection probe document used at startup.",
+      "type": "object",
+      "properties": {
+        "ok": {
+          "type": "boolean"
+        }
+      }
+    }
+  },
+  "firestore": {
+    "/demoSessions/{sessionId}": {
+      "schema": { "$ref": "#/entities/DemoSessionPointer" },
+      "description": "Active demo session pointer keyed by sessionId."
+    },
+    "/rooms/{roomCode}": {
+      "schema": { "$ref": "#/entities/Room" },
+      "description": "Shared classroom board document keyed by 4-to-6 character room code."
+    },
+    "/test/{docId}": {
+      "schema": { "$ref": "#/entities/TestConnection" },
+      "description": "Connectivity verification path."
+    }
+  }
+}

@@ -1,0 +1,102 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Global Safety Net: default deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() >= 1 && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function isValidRoomCode(code) {
+      return code is string && code.size() >= 4 && code.size() <= 6 && code.matches('^[A-Z0-9]{4,6}$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    function isValidStage(stage) {
+      return stage in ['s0', 's1', 's1b', 's2', 's3', 's4a', 's4b', 's4c', 's4d', 's5', 's6', 's7'];
+    }
+
+    function isValidRoom(data, roomCode) {
+      return data.keys().hasAll([
+          'code', 'teamName', 'theme', 'stage', 'version', 'state', 'createdAt', 'updatedAt'
+        ])
+        && data.keys().hasOnly([
+          'code', 'teamName', 'theme', 'stage', 'version', 'state', 'createdAt', 'updatedAt'
+        ])
+        && isValidRoomCode(data.code)
+        && data.code == roomCode
+        && data.teamName is string
+        && data.teamName.size() >= 1
+        && data.teamName.size() <= 40
+        && data.theme is string
+        && data.theme.size() >= 1
+        && data.theme.size() <= 80
+        && isValidStage(data.stage)
+        && data.version is int
+        && data.version >= 1
+        && data.state is map
+        && data.state.code is string
+        && data.state.code == roomCode
+        && data.state.stage is string
+        && data.state.stage == data.stage
+        && data.createdAt is timestamp
+        && data.updatedAt is timestamp;
+    }
+
+    function isValidDemoPointer(data, sessionId) {
+      return isValidId(sessionId)
+        && data.keys().hasAll(['activeCode', 'updatedAt'])
+        && data.keys().hasOnly(['activeCode', 'updatedAt'])
+        && isValidRoomCode(data.activeCode)
+        && data.updatedAt is timestamp;
+    }
+
+    match /demoSessions/{sessionId} {
+      allow get: if isValidId(sessionId);
+      allow list: if false;
+      allow create: if isValidId(sessionId)
+        && isValidDemoPointer(incoming(), sessionId)
+        && incoming().updatedAt == request.time;
+      allow update: if isValidId(sessionId)
+        && isValidDemoPointer(incoming(), sessionId)
+        && incoming().updatedAt == request.time
+        && incoming().diff(existing()).affectedKeys().hasOnly(['activeCode', 'updatedAt']);
+      allow delete: if false;
+    }
+
+    match /rooms/{roomCode} {
+      allow get: if isValidRoomCode(roomCode);
+      allow list: if false;
+      allow create: if isValidRoomCode(roomCode)
+        && isValidRoom(incoming(), roomCode)
+        && incoming().version == 1
+        && incoming().createdAt == request.time
+        && incoming().updatedAt == request.time;
+      allow update: if isValidRoomCode(roomCode)
+        && isValidRoom(incoming(), roomCode)
+        && incoming().code == existing().code
+        && incoming().createdAt == existing().createdAt
+        && incoming().updatedAt == request.time
+        && incoming().version == existing().version + 1
+        && incoming().diff(existing()).affectedKeys().hasOnly([
+          'teamName', 'theme', 'stage', 'version', 'state', 'updatedAt'
+        ]);
+      allow delete: if false;
+    }
+
+    match /test/connection {
+      allow get: if true;
+      allow list, create, update, delete: if false;
+    }
+  }
+}

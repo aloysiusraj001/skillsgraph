@@ -206,6 +206,8 @@ export type Interview = {
   messages: InterviewMessage[];
 };
 
+export type WorkshopPhase = "lobby" | "roles-intro" | "roles-deal" | "live";
+
 export type RoomState = {
   code: string;
   teamName: string;
@@ -252,6 +254,9 @@ export type RoomState = {
   top3: string[];
   filmsPlayed: string[];
   log: LogEntry[];
+  workshopPhase?: WorkshopPhase;
+  checkedInIds?: string[];
+  rolesSpun?: boolean;
 };
 
 export type Action =
@@ -361,7 +366,10 @@ export type Action =
   | { type: "release-seat"; seatId: string }
   | { type: "clear-veto" }
   | { type: "extend-timer" }
-  | { type: "play-film"; id: string };
+  | { type: "play-film"; id: string }
+  | { type: "workshop-phase"; phase: WorkshopPhase }
+  | { type: "spin-roles"; assignments: { seatId: string; role: RoleId }[] }
+  | { type: "check-in"; seatId: string };
 
 export const ROLES: Record<
   RoleId,
@@ -473,7 +481,7 @@ export const DEFAULT_BONES: BoneLabel[] = [
 
 export const PILOT = {
   teamName: "Team Kestrel",
-  theme: "School lunch waste reduction",
+  theme: "The chocolate challenge",
   teacherName: "Teacher",
   students: [
     { name: "Alex", role: "leader" as const },
@@ -484,7 +492,24 @@ export const PILOT = {
   ],
 };
 
-export const PLANTED_LABEL = "Most students skip the salad bar";
+export const SKILLGRAPH_DEMO = {
+  teamName: "8A · Group 1",
+  theme: "The chocolate challenge",
+  workshopTitle: "What's the Problem",
+  courseName: "How to build and sell a product",
+  className: "8A",
+  scheduleLabel: "Thu Sep 24 · 1:00 PM",
+  teacherName: "Teacher",
+  students: [
+    { name: "Amara Osei", role: "leader" as const },
+    { name: "Ben Halvorsen", role: "interviewer" as const },
+    { name: "Chloe Yeung", role: "mapper" as const },
+    { name: "Diego Ramos", role: "insight" as const },
+    { name: "Elif Demir", role: "devil" as const },
+  ],
+};
+
+export const PLANTED_LABEL = "Cocoa farmers prefer selling to buying agents";
 
 const NEED_SOLUTION =
   /\b(apps?|platforms?|websites?|systems?|dashboards?|features?|builds?|create)\b/i;
@@ -623,6 +648,7 @@ export function makeState(input: {
   now: number;
   teacher: { id: string; name: string };
   students: { id: string; name: string; role: RoleId | null; claimed?: boolean }[];
+  workshopPhase?: WorkshopPhase;
 }): RoomState {
   const participants: Participant[] = [
     {
@@ -648,6 +674,7 @@ export function makeState(input: {
       insightNoneNeeded: false,
     })),
   ];
+  const phase = input.workshopPhase ?? "live";
   return {
     code: input.code,
     teamName: input.teamName,
@@ -694,5 +721,8 @@ export function makeState(input: {
     top3: [],
     filmsPlayed: [],
     log: [],
+    workshopPhase: phase,
+    checkedInIds: [],
+    rolesSpun: phase === "live",
   };
 }

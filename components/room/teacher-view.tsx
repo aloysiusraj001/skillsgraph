@@ -22,8 +22,6 @@ export function TeacherView({
   saving,
   showBoard,
   onToggleBoard,
-  onPractice,
-  practicing,
   now,
 }: {
   state: RoomState;
@@ -32,8 +30,6 @@ export function TeacherView({
   saving: boolean;
   showBoard: boolean;
   onToggleBoard: () => void;
-  onPractice: () => void;
-  practicing: boolean;
   now: number;
 }) {
   const tone = TONE[radar.color];
@@ -49,15 +45,6 @@ export function TeacherView({
         <p className="mt-4 px-2 text-sm text-muted-foreground">Stay distant on green. Walk over on amber or red. The student screen already has the steps.</p>
       </nav>
       <div className="grid gap-4">
-        <section className="rounded-3xl border-2 border-[#2f62e0] bg-white p-4">
-          <h2 className="text-xl font-semibold">Run it on this screen</h2>
-          <p className="mt-2 max-w-2xl">
-            You do not need five other people to join. Open the five seats here, then switch among the roles. Start as the Leader. Add each person&apos;s cards by switching to their name.
-          </p>
-          <Button type="button" className="mt-3 h-11 px-4 text-base" disabled={saving} onClick={onPractice}>
-            {practicing ? "Open the five seats again" : "Open the five seats"}
-          </Button>
-        </section>
         <TeacherFilms state={state} act={act} saving={saving} />
         <section>
           <div className="flex flex-wrap items-baseline justify-between gap-2">

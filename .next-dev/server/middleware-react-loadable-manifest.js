@@ -1,0 +1,1 @@
+self.__REACT_LOADABLE_MANIFEST="{\"components/room/your-move.tsx -> @/lib/game\":{\"id\":\"components/room/your-move.tsx -> @/lib/game\",\"files\":[]}}"

@@ -1,16 +1,30 @@
 import type { Metadata } from "next";
-import { Atkinson_Hyperlegible, Lexend } from "next/font/google";
+import localFont from "next/font/local";
+import { FirebaseProvider } from "@/components/firebase-provider";
 import "./globals.css";
 
-const lexend = Lexend({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
+const lexend = localFont({
+  src: "./fonts/lexend-latin.woff2",
+  weight: "400 700",
+  style: "normal",
+  display: "swap",
   variable: "--font-lexend",
 });
 
-const atkinson = Atkinson_Hyperlegible({
-  subsets: ["latin"],
-  weight: ["400", "700"],
+const atkinson = localFont({
+  src: [
+    {
+      path: "./fonts/atkinson-hyperlegible-latin-400.woff2",
+      weight: "400",
+      style: "normal",
+    },
+    {
+      path: "./fonts/atkinson-hyperlegible-latin-700.woff2",
+      weight: "700",
+      style: "normal",
+    },
+  ],
+  display: "swap",
   variable: "--font-atkinson",
 });
 
@@ -22,7 +36,9 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" className={`${lexend.variable} ${atkinson.variable}`}>
-      <body className="antialiased">{children}</body>
+      <body className="antialiased">
+        <FirebaseProvider>{children}</FirebaseProvider>
+      </body>
     </html>
   );
 }

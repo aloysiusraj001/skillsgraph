@@ -15,6 +15,7 @@ import {
   type Statement,
   NEXT_STAGE,
   PLANTED_LABEL,
+  ROLE_ORDER,
   makeState,
   previousStage,
   ROLES,
@@ -802,6 +803,16 @@ function dispatch(state: RoomState, actor: Participant, action: Action, now: num
     note(state, actor, "claim", `${actor.name} joined`, now);
     return null;
   }
+  if (action.type === "check-in") {
+    const seat = state.participants.find((p) => p.id === action.seatId && p.kind === "student");
+    if (!seat) return "That seat is not in this room.";
+    seat.claimed = true;
+    const checked = new Set(state.checkedInIds ?? []);
+    checked.add(seat.id);
+    state.checkedInIds = [...checked];
+    note(state, seat, "check-in", `${seat.name} checked in`, now);
+    return null;
+  }
   if (action.type === "play-film") return playFilm(state, actor, action.id, now);
   if (actor.kind === "teacher") return teacherAction(state, actor, action, now);
   const joined = requireStudent(actor);
@@ -1028,6 +1039,31 @@ function teacherAction(state: RoomState, actor: Participant, action: Action, now
       return timerAction(state, actor, action, now);
     case "extend-timer":
       return timerAction(state, actor, { type: "timer", op: "nudge", delta: 1 }, now);
+    case "workshop-phase": {
+      state.workshopPhase = action.phase;
+      if (action.phase === "live") {
+        const list = students(state);
+        const taken = new Set(list.map((s) => s.role).filter((r): r is RoleId => Boolean(r)));
+        const remaining = ROLE_ORDER.filter((r) => !taken.has(r));
+        for (const seat of list) {
+          if (!seat.role && remaining.length > 0) {
+            seat.role = remaining.shift() ?? null;
+          }
+        }
+        state.rolesSpun = true;
+      }
+      note(state, actor, "workshop-phase", `Phase -> ${action.phase}`, now);
+      return null;
+    }
+    case "spin-roles": {
+      for (const pair of action.assignments) {
+        const seat = state.participants.find((p) => p.id === pair.seatId && p.kind === "student");
+        if (seat) seat.role = pair.role;
+      }
+      state.rolesSpun = true;
+      note(state, actor, "spin-roles", "Teacher spun the wheel to deal roles", now);
+      return null;
+    }
     default:
       return "Teachers coach from the radar. Students move the board.";
   }
@@ -1159,7 +1195,7 @@ function reveal(state: RoomState, actor: Participant, now: number) {
 function addStakeholder(state: RoomState, actor: Participant, label: string, now: number) {
   if (state.stage !== "s1") return "Stakeholder cards are added in the silent dump.";
   const text = clip(label, 80);
-  if (text.length < 2) return "Type a short label, like first-year student or canteen staff.";
+  if (text.length < 2) return "Type a short label, like cocoa farmer or buying agent.";
   const warning = stakeholderWarning(text);
   if (warning) return warning;
   if (cardsBy(state, actor.id).length >= 8) return "Eight cards is enough. Make the next ones count in the merge.";

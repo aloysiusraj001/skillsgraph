@@ -15,8 +15,8 @@ function room() {
   ];
   return makeState({
     code: "K7MP",
-    teamName: "Team Kestrel",
-    theme: "School lunch waste reduction",
+    teamName: "Team Cocoa",
+    theme: "The chocolate challenge",
     now: NOW,
     teacher: { id: "teacher", name: "Teacher" },
     students,
@@ -43,16 +43,16 @@ describe("C60 room rules", () => {
   it("lets the teacher move back and reset without losing the room", () => {
     let state = room();
     state = act(state, "Teacher", { type: "next-step" });
-    state = act(state, "Alex", { type: "add-stakeholder", label: "Canteen staff" });
+    state = act(state, "Alex", { type: "add-stakeholder", label: "Buying agents" });
     state = act(state, "Teacher", { type: "next-step" });
     assert.equal(state.stage, "s1b");
     state = act(state, "Teacher", { type: "previous-step" });
     assert.equal(state.stage, "s1");
-    assert.equal(state.stakeholders.some((card) => card.label === "Canteen staff"), true);
+    assert.equal(state.stakeholders.some((card) => card.label === "Buying agents"), true);
     state = act(state, "Teacher", { type: "reset-board" });
     assert.equal(state.stage, "s0");
     assert.equal(state.stakeholders.length, 0);
-    assert.equal(state.teamName, "Team Kestrel");
+    assert.equal(state.teamName, "Team Cocoa");
     assert.equal(state.participants.find((person) => person.name === "Maya")?.role, "mapper");
     assert.match(fail(state, "Alex", { type: "reset-board" }), /teacher/i);
   });
@@ -61,7 +61,7 @@ describe("C60 room rules", () => {
     let state = room();
     state = act(state, "Teacher", { type: "next-step" });
     assert.equal(state.stage, "s1");
-    state = act(state, "Alex", { type: "add-stakeholder", label: "Canteen staff" });
+    state = act(state, "Alex", { type: "add-stakeholder", label: "Buying agents" });
     state = act(state, "Teacher", { type: "next-step" });
     assert.equal(state.stage, "s1b");
     assert.match(fail(state, "Alex", { type: "next-step" }), /teacher/i);
@@ -70,7 +70,7 @@ describe("C60 room rules", () => {
   it("moves on when the teacher ends time, even with fewer than 3 cards", () => {
     let state = room();
     state = act(state, "Alex", { type: "start" });
-    state = act(state, "Alex", { type: "add-stakeholder", label: "Canteen staff" });
+    state = act(state, "Alex", { type: "add-stakeholder", label: "Buying agents" });
     assert.equal(meter(state).ready, true);
     state = act(state, "Teacher", { type: "timer", op: "end" });
     assert.equal(state.stage, "s1b");
@@ -107,11 +107,11 @@ describe("C60 room rules", () => {
     };
     state = act(state, "Alex", { type: "start" }, next());
     const labels = [
-      ["Alex", ["Canteen supervisor", "Lunch cashier", "Head of year"]],
-      ["Leo", ["First-year students", "Canteen staff", "Parent who pays"]],
-      ["Maya", ["Kitchen porter", "Duty teacher", "Waste monitor"]],
-      ["Asha", ["Quiet students", "Dishwasher", "Younger sibling"]],
-      ["Kai", ["Gatekeeper supervisor", "Skeptical cook", "Budget holder"]],
+      ["Alex", ["Village buyer", "Cooperative lead", "Export inspector"]],
+      ["Leo", ["Cocoa farmers", "Buying agents", "Chocolate makers"]],
+      ["Maya", ["Field transporters", "Drying shed workers", "Local traders"]],
+      ["Asha", ["Children on farms", "Seasonal pickers", "Younger helpers"]],
+      ["Kai", ["Scale operator", "Warehouse clerk", "Price board"]],
     ] as const;
     for (const [name, cards] of labels) {
       for (const label of cards) state = act(state, name, { type: "add-stakeholder", label }, next());
@@ -122,8 +122,8 @@ describe("C60 room rules", () => {
     assert.ok(state.stakeholders.some((card) => card.planted && card.source === "guess"));
 
     const pile = roots(state);
-    const left = pile.find((card) => card.label === "Canteen staff");
-    const right = pile.find((card) => card.label === "Kitchen porter");
+    const left = pile.find((card) => card.label === "Buying agents");
+    const right = pile.find((card) => card.label === "Local traders");
     assert.ok(left && right);
     assert.match(fail(state, "Leo", { type: "merge", a: left.id, b: right.id }), /Theme Mapper/);
     state = act(state, "Maya", { type: "merge", a: left.id, b: right.id }, next());
@@ -132,14 +132,14 @@ describe("C60 room rules", () => {
     assert.equal(state.stage, "s2");
 
     for (const card of roots(state)) {
-      const interest = card.label.includes("student") || card.label.includes("Quiet") ? "high" : "low";
-      const power = card.label.includes("supervisor") || card.label.includes("Budget") || card.label.includes("Parent") ? "high" : "low";
+      const interest = card.label.includes("Cocoa") || card.label.includes("Children") ? "high" : "low";
+      const power = card.label.includes("buyer") || card.label.includes("makers") || card.label.includes("inspector") ? "high" : "low";
       state = act(state, "Maya", { type: "place", id: card.id, power, interest }, next());
     }
     state = act(state, "Alex", { type: "open-vote" }, next());
     const priorities = [
-      roots(state).find((card) => card.label === "First-year students")!,
-      roots(state).find((card) => card.label === "Quiet students")!,
+      roots(state).find((card) => card.label === "Cocoa farmers")!,
+      roots(state).find((card) => card.label === "Children on farms")!,
     ];
     for (const person of present(state)) {
       state = act(state, person.name, { type: "vote-card", id: priorities[0].id }, next());
@@ -151,7 +151,7 @@ describe("C60 room rules", () => {
     );
     state = act(state, "Leo", { type: "source", id: priorities[0].id, source: "heard" }, next());
     state = act(state, "Leo", { type: "whose", id: priorities[0].id }, next());
-    state = act(state, "Leo", { type: "harm", text: "They leave with trays still full and skip the meal." }, next());
+    state = act(state, "Leo", { type: "harm", text: "They receive only a tiny fraction of the bar price." }, next());
     assert.equal(meter(state).ready, false);
     state = act(state, "Kai", { type: "flag-missing", flag: "blocker" }, next());
     assert.equal(meter(state).color, "green");
@@ -162,7 +162,7 @@ describe("C60 room rules", () => {
     state = act(
       state,
       "Leo",
-      { type: "add-incident", text: "Last Tuesday, three first-years left trays half full after 10 minutes." },
+      { type: "add-incident", text: "Last Tuesday, a family's dried cocoa bag weighed less on the buyer's scale." },
       next(),
     );
     for (const person of present(state)) {
@@ -173,13 +173,13 @@ describe("C60 room rules", () => {
     assert.equal(state.stage, "s4a");
     assert.match(state.incidents[0].text, /Tuesday/);
 
-    const causes = ["The lunch break is shorter than the queue", "The menu is posted after students have queued", "Portions look cold under the lights", "Clearing starts before the last students sit", "Bins sit far from the tables", "The hall is too loud to ask what is inside a meal"];
+    const causes = ["Cocoa trees take years before the first harvest", "Grade is announced after weighing", "A day of cutting pods pays only a few cents", "Beans must be fermented before sale", "The scale belongs only to the buyer", "Rain spoils beans drying outside"];
     const names = present(state).map((person) => person.name);
     names.forEach((name, index) => {
       state = act(state, name, { type: "add-cause", text: causes[index] }, next());
     });
-    state = act(state, "Alex", { type: "add-cause", text: "Servers rush the last five minutes" }, next());
-    state = act(state, "Leo", { type: "add-cause", text: "The bell rings before the line clears", bone: "timing" }, next());
+    state = act(state, "Alex", { type: "add-cause", text: "Buyers leave before farmers can check" }, next());
+    state = act(state, "Leo", { type: "add-cause", text: "Market truck arrives before drying finishes", bone: "timing" }, next());
     assert.equal(state.causes.at(-1)?.bone, "timing");
     const boneIds = ["timing", "communication", "value", "process", "tools", "environment"] as const;
     state.causes.forEach((cause, index) => {
@@ -208,7 +208,7 @@ describe("C60 room rules", () => {
         type: "add-hop",
         bone: "timing",
         parentId: timing.id,
-        text: "The line is too long for the lunch break",
+        text: "The harvest schedule leaves no buffer before rain",
         chip: "evidence",
       },
       next(),
@@ -221,14 +221,14 @@ describe("C60 room rules", () => {
         type: "add-hop",
         bone: "communication",
         parentId: communication.id,
-        text: "The menu is posted after they have already queued",
+        text: "The grade is decided after beans leave the household",
         chip: "evidence",
       },
       next(),
     );
     state = act(state, "Kai", { type: "review-clear" }, next());
     state = act(state, "Alex", { type: "continue-pins" }, next());
-    const line = state.hops.find((hop) => hop.text.startsWith("The line is too long"))!;
+    const line = state.hops.find((hop) => hop.text.startsWith("The harvest schedule"))!;
     assert.equal(
       suggestCandidates(state, {
         id: "tmp",
@@ -268,17 +268,17 @@ describe("C60 room rules", () => {
     assert.equal(state.stage, "s5");
 
     const carry = carryFor(state, pin.id);
-    assert.equal(carry.who, "First-year students");
-    assert.equal(carry.harm, "Last Tuesday, three first-years left trays half full after 10 minutes.");
+    assert.equal(carry.who, "Cocoa farmers");
+    assert.equal(carry.harm, "Last Tuesday, a family's dried cocoa bag weighed less on the buyer's scale.");
     assert.equal(carry.obstacle, timing.text);
     assert.equal(carry.insight, line.text);
 
     const needs = [
-      "enough time to choose a full meal",
-      "a clear view of what is being served",
-      "a chance to ask before the tray is full",
-      "room to eat without rushing the bin",
-      "a way to tell what is worth taking",
+      "a fair price that covers a year of harvest work",
+      "a clear grade before beans leave the farm",
+      "a checked scale they can verify themselves",
+      "covered drying space when rain starts",
+      "payment on the day the beans are weighed",
     ];
     present(state).forEach((person, index) => {
       state = act(
@@ -304,7 +304,7 @@ describe("C60 room rules", () => {
     });
     assert.equal(state.stage, "s6");
     assert.equal(state.statements.length, 5);
-    assert.ok(state.statements.every((card) => card.need && card.who === "First-year students"));
+    assert.ok(state.statements.every((card) => card.need && card.who === "Cocoa farmers"));
 
     state = act(state, "Kai", { type: "review-clear" }, next());
     state = act(state, "Asha", { type: "none-needed" }, next());
@@ -339,7 +339,7 @@ describe("C60 room rules", () => {
     state.stakeholders.push({
       id: "who",
       authorId: "leo",
-      label: "First-year students",
+      label: "Cocoa farmers",
       source: "heard",
       planted: false,
       authorIds: ["leo"],
@@ -359,8 +359,8 @@ describe("C60 room rules", () => {
       votes: [],
       placed: true,
       blocked: false,
-      obstacle: "The line is too long",
-      insight: "The menu is late",
+      obstacle: "The harvest window is tight",
+      insight: "The grade is set after sale",
       obstacleSet: true,
       insightSet: true,
     });
@@ -368,18 +368,18 @@ describe("C60 room rules", () => {
       type: "save-statement" as const,
       pinId: "pin",
       who: "users",
-      need: "an app that tracks waste",
-      obstacle: "The line is too long",
-      harm: "They leave hungry.",
-      insight: "The menu is late",
+      need: "an app that tracks cocoa prices",
+      obstacle: "The harvest window is tight",
+      harm: "They receive less than expected.",
+      insight: "The grade is set after sale",
       deepen: emptyDeepen(),
       useNewVersion: false,
     };
     state = act(state, "Alex", base);
     assert.match(fail(state, "Alex", { type: "submit-statement" }), /generic|solution|human need/i);
-    state = act(state, "Alex", { ...base, who: "First-year students", need: "enough time to choose" });
+    state = act(state, "Alex", { ...base, who: "Cocoa farmers", need: "a fair price they can verify" });
     state = act(state, "Alex", { type: "submit-statement" });
-    assert.equal(state.statements[0].need, "enough time to choose");
+    assert.equal(state.statements[0].need, "a fair price they can verify");
     assert.equal(state.statements[0].submitted, true);
   });
 });

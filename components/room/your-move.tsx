@@ -152,7 +152,7 @@ function Controls({
             setText("");
           }}
         >
-          <Input value={text} onChange={(event) => setText(event.target.value)} placeholder="First-year student" className="h-11 text-base md:text-base" aria-label="Stakeholder label" />
+          <Input value={text} onChange={(event) => setText(event.target.value)} placeholder="Cocoa farmer" className="h-11 text-base md:text-base" aria-label="Stakeholder label" />
           <MoveButton role={role} disabled={locked} onClick={() => { act({ type: "add-stakeholder", label: text }); setText(""); }}>
             Add my stakeholder
           </MoveButton>
@@ -211,7 +211,7 @@ function SummaryControls({
   return (
     <>
       {role === "mapper" && <p>Drag a card into a quadrant. You can also tap a card, then tap the quadrant.</p>}
-      {role !== "mapper" && role !== "interviewer" && <p>Vote on the cards. You cannot move them.</p>}
+      {role !== "mapper" && role !== "interviewer" && <p>You are watching. You cannot move cards.</p>}
       {role === "interviewer" && (
         <>
           <label className="text-sm">
@@ -254,7 +254,7 @@ function IncidentControls({
     <>
       {role === "interviewer" ? (
         <>
-          <Textarea value={text} onChange={(event) => setText(event.target.value)} className="min-h-24 text-base" aria-label="Incident" placeholder="Last Tuesday, three students left trays half full." />
+          <Textarea value={text} onChange={(event) => setText(event.target.value)} className="min-h-24 text-base" aria-label="Incident" placeholder="At last week's buying station, a family's dried beans weighed less on the buyer's scale." />
           <p className="text-sm text-muted-foreground">Use a moment from the interview. A when, where, and what makes a stronger fact.</p>
           <MoveButton
             role={role}
@@ -309,7 +309,7 @@ function CauseControls({
         ))}
       </div>
       {chosen && <p className="text-sm text-muted-foreground">{BONE_HINTS[chosen.id]}</p>}
-      <Textarea value={text} onChange={(event) => setText(event.target.value)} className="min-h-20 text-base" aria-label="Cause" placeholder="The lunch line is longer than the break" />
+      <Textarea value={text} onChange={(event) => setText(event.target.value)} className="min-h-20 text-base" aria-label="Cause" placeholder="Rain spoiled beans drying in the open" />
       <MoveButton
         role={role}
         disabled={locked || !bone || text.trim().length < 3}
@@ -524,7 +524,7 @@ function AskWhom({
           <span className="text-sm text-muted-foreground">{hop.askWhom ? `Ask ${hop.askWhom}` : "No one named yet"}</span>
         </button>
       ))}
-      <Input value={whom} onChange={(event) => setWhom(event.target.value)} className="h-11 text-base md:text-base" aria-label="Who to ask" placeholder="The lunch supervisor" />
+      <Input value={whom} onChange={(event) => setWhom(event.target.value)} className="h-11 text-base md:text-base" aria-label="Who to ask" placeholder="The buying agent" />
       <MoveButton
         role={role}
         disabled={locked || !current || whom.trim().length < 2}

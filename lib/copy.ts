@@ -48,7 +48,7 @@ export const SCREENS: Record<StageId, ScreenCopy> = {
       "Add people or groups touched by this theme. Name a role or a specific person type — not a product and not a solution. Work silently. Others cannot see your cards until the teacher ends the time. Aim for at least 3 cards each. Fewer cards does not stop the next step.",
     steps: [
       "Tap Add stakeholder",
-      "Type a short label (e.g. first-year student, canteen staff, parent who pays)",
+      "Type a short label (e.g. cocoa farmer, buying agent, chocolate maker)",
       "Aim for at least 3 cards of your own",
       "Stay silent until the teacher ends the time",
     ],
@@ -100,7 +100,7 @@ export const SCREENS: Record<StageId, ScreenCopy> = {
   s3: {
     title: "Pin one real incident",
     instruction:
-      "Pick one observable incident related to a priority group. Write what happened as a fact — not a blame story. Example shape: Last Tuesday, three students left the workshop after 10 minutes. Not: Students are lazy.",
+      "Pick one observable incident related to a priority group. Write what happened as a fact — not a blame story. Example shape: At last week's buying station, a family's bag weighed less on the buyer's scale than on a checked scale. Not: Buyers are dishonest.",
     steps: [
       "Lead Interviewer proposes one incident card",
       "Others may add alternate incident cards",
