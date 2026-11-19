@@ -44,6 +44,132 @@ export function mapInterview(brief: PersonaBrief): InterviewTurn[] {
   ];
 }
 
+export function questionAsksForChoice(question: string) {
+  const q = question.toLowerCase();
+  if (/\b(pick|choose|decide)\b/.test(q) && /\b(incident|solution|problem|app)\b/.test(q)) return true;
+  if (/\b(what|which)\s+app\b/.test(q)) return true;
+  if (/\b(design an app|solve it|our solution)\b/.test(q)) return true;
+  if (/\bshould we\b/.test(q) && /\b(build|solve|pick|choose|design|app|solution|incident)\b/.test(q)) return true;
+  return false;
+}
+
+function tidySpoken(text: string) {
+  let s = text.replace(/\s+/g, " ").trim();
+  s = s.replace(/\s+([,.!?])/g, "$1");
+  s = s.replace(/,\s*(?=[.!?])/g, "");
+  s = s.replace(/^[,.\s]+/, "");
+  s = s.replace(/(^|[.!?]\s+)(so|and|but|though)\s+/gi, "$1");
+  s = s.replace(/\s{2,}/g, " ").trim();
+  s = s.replace(/(^|[.!?]\s+)([a-z])/g, (_, lead: string, letter: string) => lead + letter.toUpperCase());
+  s = s.replace(/\.{2,}/g, ".");
+  if (s && !/[.!?]$/.test(s)) s += ".";
+  return s;
+}
+
+const OUT_OF_CHARACTER =
+  /\b(class guess|unchecked guess|just a guess|checked with a real person|as an ai|language model|i am an ai|i['’ʼ]m an ai)\b/i;
+const HEDGE =
+  /\b(it seems like|i am uncertain|i think i am trying|i think i['’ʼ]m trying|maybe it is because|i['’ʼ]m not sure|i am not sure|i cannot be sure|unsure)\b/i;
+
+export function breaksCharacter(text: string) {
+  return OUT_OF_CHARACTER.test(text) || HEDGE.test(text);
+}
+
+export function hasWorkFact(text: string) {
+  return (
+    /\d/.test(text) ||
+    /\b(january|february|march|april|may|june|july|august|september|october|november|december|monday|tuesday|wednesday|thursday|friday|saturday|sunday|kg|kilogram|kilo|cedi|dollar|naira|franc|peso|percent|harvest|rainy season|dry season)\b/i.test(
+      text,
+    )
+  );
+}
+
+export function scriptSoundsGuessed(turns: { speaker?: string; text: string }[]) {
+  return turns.some(
+    (turn) =>
+      OUT_OF_CHARACTER.test(turn.text) ||
+      /pick your team['’ʼ]s incident/i.test(turn.text) ||
+      (turn.speaker === "team" && questionAsksForChoice(turn.text)),
+  );
+}
+
+export function interviewSoundsReal(turns: InterviewTurn[]) {
+  const answers = turns.filter((turn) => turn.speaker === "persona");
+  if (answers.length < 3) return false;
+  if (turns.some((turn) => breaksCharacter(turn.text))) return false;
+  if (turns.some((turn) => turn.speaker === "team" && questionAsksForChoice(turn.text))) return false;
+  return answers.filter((turn) => turn.text.length > 30 && /\d/.test(turn.text)).length >= 2;
+}
+
+export function questionWantsFact(question: string) {
+  return /\b(how much|how many|price|paid|pay|earn|income|cost|money|a year|per month|kg|weight|when|where)\b/i.test(
+    question,
+  );
+}
+
+export function replySoundsReal(question: string, text: string) {
+  if (text.trim().length < 20 || breaksCharacter(text)) return false;
+  if (questionAsksForChoice(question)) return true;
+  if (/\b(how much|how many|price|paid|pay|earn|income|cost|money)\b/i.test(question) && !/\d/.test(text)) {
+    return false;
+  }
+  if (questionWantsFact(question) && !hasWorkFact(text)) return false;
+  return true;
+}
+
+function isDisclaimer(sentence: string) {
+  return OUT_OF_CHARACTER.test(sentence);
+}
+
+function refusesChoice(sentence: string) {
+  return /\bpick\b/i.test(sentence)
+    && /\b(incident|solution)\b/i.test(sentence)
+    && /\b(can(?:not|['’ʼ]t)|will not|won['’ʼ]t|not going to)\b/i.test(sentence);
+}
+
+export function fitPersonaAnswer(question: string, text: string) {
+  const asked = questionAsksForChoice(question);
+  let s = text
+    .replace(/,?\s*though I am just a class guess right now\.?/gi, "")
+    .replace(/\bI['’ʼ]?m just a guess and haven['’ʼ]t been checked with a real person,\s*so\s+/gi, "")
+    .replace(/\bI have not been checked with a real person(?: yet)?,\s*so I am uncertain,\s*but\s+/gi, "")
+    .replace(/,?\s*especially since I am still an unchecked guess\b[^.!?]*/gi, "")
+    .replace(/\b(?:and )?you should verify these details with a real (?:person|farmer) first\.?/gi, "");
+  if (!asked) {
+    s = s.replace(
+      /,?\s*(?:though|but|and)?\s*I\s+(?:can(?:not|['’ʼ]t)|will not|won['’ʼ]t)\s+pick\b[^.!?]*\b(?:incident|solution)\b[^.!?]*[.!?]?/gi,
+      "",
+    );
+  }
+  const sentences = s.match(/[^.!?]+[.!?]+|[^.!?]+$/g) ?? [];
+  const kept = sentences.map((sentence) => sentence.trim()).filter((sentence) => {
+    if (!sentence) return false;
+    if (isDisclaimer(sentence) || HEDGE.test(sentence)) return false;
+    if (!asked && refusesChoice(sentence)) return false;
+    return true;
+  });
+  return tidySpoken(kept.join(" "));
+}
+
+export function presentInterviewTurns(turns: InterviewTurn[]): InterviewTurn[] {
+  const shown: InterviewTurn[] = [];
+  for (let index = 0; index < turns.length; index += 1) {
+    const turn = turns[index];
+    if (turn.speaker === "team" && questionAsksForChoice(turn.text)) {
+      if (turns[index + 1]?.speaker === "persona") index += 1;
+      continue;
+    }
+    if (turn.speaker === "persona") {
+      const question = [...shown].reverse().find((item) => item.speaker === "team")?.text ?? "";
+      const text = fitPersonaAnswer(question, turn.text);
+      if (text) shown.push({ ...turn, text });
+      continue;
+    }
+    shown.push(turn);
+  }
+  return shown;
+}
+
 export function mapReply(question: string, brief: PersonaBrief): string {
   const q = question.toLowerCase();
   if (/\b(solution|solve|fix|app|should we|what should|idea)\b/.test(q)) {
@@ -64,17 +190,18 @@ export function mapReply(question: string, brief: PersonaBrief): string {
 }
 
 export function needSeed(turns: InterviewTurn[] | undefined) {
-  if (!turns?.length) return "";
+  const shown = turns?.length ? presentInterviewTurns(turns) : [];
+  if (!shown.length) return "";
   let answer = "";
-  for (let index = 0; index < turns.length - 1; index += 1) {
-    const ask = turns[index];
-    const reply = turns[index + 1];
+  for (let index = 0; index < shown.length - 1; index += 1) {
+    const ask = shown[index];
+    const reply = shown[index + 1];
     if (ask.speaker === "team" && reply.speaker === "persona" && /trying to get done/i.test(ask.text)) {
       answer = reply.text.trim();
       break;
     }
   }
-  if (!answer) answer = turns.find((turn) => turn.speaker === "persona")?.text.trim() ?? "";
+  if (!answer) answer = shown.find((turn) => turn.speaker === "persona")?.text.trim() ?? "";
   return phraseNeed(answer);
 }
 

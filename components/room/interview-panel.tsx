@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { uid, type RoomState } from "@/lib/domain";
-import { INTERVIEW_QUESTION_CAP, briefFrom } from "@/lib/interview";
+import { INTERVIEW_QUESTION_CAP, briefFrom, fitPersonaAnswer, presentInterviewTurns, scriptSoundsGuessed } from "@/lib/interview";
 import { saveInterviewInFirestore } from "@/lib/rooms-firestore";
 
 export function InterviewPanel({
@@ -68,15 +68,7 @@ export function InterviewPanel({
     }
   }
 
-  const hasLegacyDisclaimer = Boolean(
-    interview &&
-      interview.messages.length === 0 &&
-      interview.turns.some((turn) =>
-        /class guess|unchecked guess|checked with a real person|pick your team's incident/i.test(
-          turn.text,
-        ),
-      ),
-  );
+  const hasLegacyDisclaimer = Boolean(interview && scriptSoundsGuessed(interview.turns));
 
   useEffect(() => {
     if ((interview && !hasLegacyDisclaimer) || !state.summary.whoseId || !state.summary.harm.trim()) {
@@ -183,18 +175,23 @@ export function InterviewPanel({
         )
       ) : (
         <div className="mt-3 grid gap-2">
-          {interview.turns.map((turn, index) => (
+          {presentInterviewTurns(interview.turns).map((turn, index) => (
             <p key={index} className={turn.speaker === "persona" ? "rounded-2xl bg-[#f6f1ff] px-3 py-2" : "px-3 text-sm text-muted-foreground"}>
               <span className="font-semibold">{turn.speaker === "persona" ? "Them" : "Team"}: </span>
               {turn.text}
             </p>
           ))}
-          {interview.messages.map((message) => (
-            <p key={message.id} className={message.role === "persona" ? "rounded-2xl bg-[#f6f1ff] px-3 py-2" : "rounded-2xl bg-[#faf8f4] px-3 py-2"}>
-              <span className="font-semibold">{message.role === "persona" ? "Them" : state.participants.find((person) => person.id === message.by)?.name || "Student"}: </span>
-              {message.text}
-            </p>
-          ))}
+          {interview.messages.map((message, index) => {
+            const askedEarlier = [...interview.messages.slice(0, index)].reverse().find((item) => item.role === "student")?.text ?? "";
+            const text = message.role === "persona" ? fitPersonaAnswer(askedEarlier, message.text) : message.text;
+            if (!text) return null;
+            return (
+              <p key={message.id} className={message.role === "persona" ? "rounded-2xl bg-[#f6f1ff] px-3 py-2" : "rounded-2xl bg-[#faf8f4] px-3 py-2"}>
+                <span className="font-semibold">{message.role === "persona" ? "Them" : state.participants.find((person) => person.id === message.by)?.name || "Student"}: </span>
+                {text}
+              </p>
+            );
+          })}
           {canAsk && asked < INTERVIEW_QUESTION_CAP && (
             <form
               className="mt-2 flex flex-wrap gap-2"

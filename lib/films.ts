@@ -83,7 +83,7 @@ export const FILMS: Film[] = [
         heading: "Why talk to them",
         paragraphs: [
           "You have a person. You do not yet have a moment. The short interview is a faster version of a longer conversation. The team asks. That person answers. Read what they are trying to get done, what gets in the way, and one moment with a when and a where.",
-          "It is built from your map. It is not a recording. If the map says this person is a guess, the interview says so.",
+          "The person speaks as someone who does this work. They use real seasons, prices, and what actually went wrong. It is not a recording of one visit.",
         ],
       },
       {

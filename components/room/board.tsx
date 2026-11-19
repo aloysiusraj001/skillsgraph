@@ -625,21 +625,23 @@ function Fish({
       const rootBox = root.getBoundingClientRect();
       const spineBox = spine.getBoundingClientRect();
       const spineY = spineBox.top + spineBox.height / 2 - rootBox.top;
-      const half = Math.ceil(state.bones.length / 2);
-      const next = state.bones.flatMap((bone, index) => {
+      const spineLeft = spineBox.left - rootBox.left;
+      const spineRight = spineBox.right - rootBox.left;
+      const next = state.bones.flatMap((bone) => {
         const label = labelRefs.current[bone.id];
         if (!label) return [];
         const box = label.getBoundingClientRect();
-        const slot = index < half ? index : index - half;
-        const along = (slot + 1) / (half + 1);
         const followed = state.focusBone === bone.id;
         const glow = followed || (!state.focusBone && state.selectedBones.includes(bone.id));
+        const x2 = box.right - rootBox.left;
+        const y2 = box.top + box.height / 2 - rootBox.top;
+        const x1 = Math.max(spineLeft + 12, Math.min(spineRight - 8, x2 + 36));
         return [{
           id: bone.id,
-          x1: Math.round(spineBox.left + spineBox.width * (0.12 + along * 0.76) - rootBox.left),
+          x1: Math.round(x1),
           y1: Math.round(spineY),
-          x2: Math.round(box.left + box.width / 2 - rootBox.left),
-          y2: Math.round(box.top + box.height / 2 - rootBox.top),
+          x2: Math.round(x2),
+          y2: Math.round(y2),
           stroke: glow ? "#0E948C" : "#1b2a4a",
         }];
       });
@@ -666,12 +668,13 @@ function Fish({
               : "Tap one bone. The five Whys will line up on that rib, and the rib meets the backbone."}
       </p>
       <div className="rounded-[2rem] border border-[#e4dcd0] bg-[#f6f1e8] p-3">
-        <div ref={rootRef} className="relative">
+        <div className="overflow-x-auto">
+        <div ref={rootRef} className="relative min-w-[54rem]">
         <svg className="pointer-events-none absolute inset-0 h-full w-full overflow-visible" aria-hidden>
           {ribLines.map((rib) => (
             <g key={rib.id}>
               <path
-                d={`M ${rib.x1} ${rib.y1} C ${rib.x1} ${(rib.y1 + rib.y2) / 2}, ${rib.x2} ${rib.y2}, ${rib.x2} ${rib.y2}`}
+                d={`M ${rib.x1} ${rib.y1} L ${rib.x2} ${rib.y2}`}
                 fill="none"
                 stroke={rib.stroke}
                 strokeWidth="3"
@@ -681,9 +684,9 @@ function Fish({
             </g>
           ))}
         </svg>
-        <div className="relative grid items-center gap-x-2 gap-y-4" style={{ gridTemplateColumns: "minmax(0,1fr) 9rem" }}>
-          {top.map((bone) => (
-            <FishRib key={bone.id} state={state} bone={bone} selected={selected} onSelect={onSelect} act={act} canMove={canMove} readOnly={readOnly} labelRef={(node) => { labelRefs.current[bone.id] = node; }} />
+        <div className="relative grid items-center gap-y-4">
+          {top.map((bone, index) => (
+            <FishRib key={bone.id} fromHead={top.length - 1 - index} state={state} bone={bone} selected={selected} onSelect={onSelect} act={act} canMove={canMove} readOnly={readOnly} labelRef={(node) => { labelRefs.current[bone.id] = node; }} />
           ))}
           <div className="flex min-w-0 items-center">
             <FishTail />
@@ -695,11 +698,12 @@ function Fish({
                 ))}
               </div>
             </div>
+            <FishHead title={following ? `Fish head · ${following.label}` : "Fish head"} text={incident?.text ?? "Incident lands here"} />
           </div>
-          <FishHead title={following ? `Fish head · ${following.label}` : "Fish head"} text={incident?.text ?? "Incident lands here"} />
-          {bottom.map((bone) => (
-            <FishRib key={bone.id} state={state} bone={bone} selected={selected} onSelect={onSelect} act={act} canMove={canMove} readOnly={readOnly} labelRef={(node) => { labelRefs.current[bone.id] = node; }} />
+          {bottom.map((bone, index) => (
+            <FishRib key={bone.id} fromHead={index} state={state} bone={bone} selected={selected} onSelect={onSelect} act={act} canMove={canMove} readOnly={readOnly} labelRef={(node) => { labelRefs.current[bone.id] = node; }} />
           ))}
+        </div>
         </div>
         </div>
       </div>
@@ -740,6 +744,7 @@ function whyChain(state: RoomState, causeId: string) {
 function FishRib({
   state,
   bone,
+  fromHead,
   selected,
   onSelect,
   act,
@@ -749,6 +754,7 @@ function FishRib({
 }: {
   state: RoomState;
   bone: RoomState["bones"][number];
+  fromHead: number;
   selected: string | null;
   onSelect: (id: string | null) => void;
   act: (action: Action) => void;
@@ -767,10 +773,9 @@ function FishRib({
   const placedPin = state.pins.find((pin) => pin.bone === bone.id && pin.placed && !pin.blocked);
   const placedCause = placedPin ? state.causes.find((cause) => cause.id === placedPin.causeId) : undefined;
   return (
-    <>
-      <div className={cn("flex min-w-0 items-center", dim && "opacity-40")}>
-        <div className="min-w-0 flex-1 overflow-x-auto">
-          <div className="flex w-max min-w-full items-center justify-end">
+    <div className={cn("flex min-w-0 items-center", dim && "opacity-40")} style={{ paddingRight: `calc(13rem + ${fromHead * 12}rem)` }}>
+      <div className="min-w-0 flex-1 overflow-x-auto">
+        <div className="flex w-max min-w-full items-center justify-end">
             {causes.length === 0 && <p className="text-sm leading-none text-muted-foreground">Nothing on this bone yet.</p>}
             {causes.map((cause) => (
               <div key={cause.id} className="flex flex-nowrap items-center">
@@ -804,9 +809,8 @@ function FishRib({
             ))}
           </div>
         </div>
-        <div className="h-0.5 w-5 shrink-0 rounded-full" style={{ background: stroke }} aria-hidden />
-      </div>
-      <div ref={labelRef} className={cn("self-center text-right", dim && "opacity-40")}>
+      <div className="h-0.5 w-5 shrink-0 rounded-full" style={{ background: stroke }} aria-hidden />
+      <div ref={labelRef} className="w-36 shrink-0 text-right">
         {canFollow ? (
           <button type="button" className="text-right" onClick={() => act({ type: "follow-bone", id: bone.id })}>
             <div className={cn("font-semibold leading-none", glow && "text-[#0E948C]")}>{bone.label}</div>
@@ -830,7 +834,7 @@ function FishRib({
           </button>
         )}
       </div>
-    </>
+    </div>
   );
 }
 
@@ -910,7 +914,7 @@ function FishTail() {
 
 function FishHead({ title, text }: { title: string; text: string }) {
   return (
-    <div className="relative w-full">
+    <div className="relative w-40 shrink-0">
       <svg viewBox="0 0 288 156" className="h-24 w-full" aria-hidden>
         <path d="M6,78 C6,26 78,6 156,14 C214,20 262,48 278,78 C262,108 214,136 156,142 C78,150 6,130 6,78 Z" fill="#1b2a4a" />
         <path d="M34,46 C86,62 86,94 34,110" fill="none" stroke="#d5dceb" strokeWidth="2" opacity="0.75" />
