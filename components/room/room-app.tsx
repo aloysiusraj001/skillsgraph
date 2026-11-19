@@ -2,13 +2,14 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { AnimatePresence, motion, MotionConfig } from "motion/react";
 import { LogOut } from "lucide-react";
-import { RoleToken } from "@/components/role-token";
+import { RolePortrait, RoleToken, TeacherPortrait } from "@/components/role-token";
 import { RoomCode } from "@/components/room-code";
 import { Board } from "@/components/room/board";
-import { StudentFilms } from "@/components/room/film-panel";
 import { InterviewPanel } from "@/components/room/interview-panel";
 import { TeacherView } from "@/components/room/teacher-view";
+import { WindingCanvas } from "@/components/room/winding-canvas";
 import { YourMove } from "@/components/room/your-move";
 import {
   clearPersona,
@@ -259,52 +260,9 @@ export function RoomApp({ code }: { code: string }) {
     ? "Teacher"
     : `${you.name}${you.role ? ` · ${ROLES[you.role].name}` : ""}`;
 
-  if (workshopPhase === "lobby") {
-    return (
-      <WorkshopLobbyScreen
-        state={state}
-        isTeacher={teacher}
-        personaLabel={personaLabel}
-        saving={saving}
-        onBack={() => router.push("/")}
-        onLogout={handleLogout}
-        onStartSession={() => void act({ type: "workshop-phase", phase: "roles-intro" })}
-      />
-    );
-  }
-
-  if (workshopPhase === "roles-intro") {
-    return (
-      <RolesIntroScreen
-        isTeacher={teacher}
-        personaLabel={personaLabel}
-        saving={saving}
-        onBack={() => void act({ type: "workshop-phase", phase: "lobby" })}
-        onLogout={handleLogout}
-        onContinue={() => void act({ type: "workshop-phase", phase: "roles-deal" })}
-      />
-    );
-  }
-
-  if (workshopPhase === "roles-deal") {
-    return (
-      <RolesDealScreen
-        state={state}
-        isTeacher={teacher}
-        personaLabel={personaLabel}
-        saving={saving}
-        onBack={() => void act({ type: "workshop-phase", phase: "roles-intro" })}
-        onLogout={handleLogout}
-        onSpinRoles={async (spinAction) => {
-          await act(spinAction);
-        }}
-        onStartWorkshop={() => void act({ type: "workshop-phase", phase: "live" })}
-      />
-    );
-  }
-
+  const stepIndex = Math.max(0, PILLS.findIndex(([id]) => id === state.stage));
+  const stepLabel = PILLS[stepIndex]?.[1] ?? "";
   const screen = SCREENS[state.stage];
-  const pill = state.stage;
   const purpose = STEP_PURPOSE[state.stage];
 
   function choose(id: string | null) {
@@ -324,137 +282,237 @@ export function RoomApp({ code }: { code: string }) {
   }
 
   return (
-    <div className="min-h-screen overflow-x-hidden">
-      <header className="sticky top-0 z-20 border-b bg-[#f3efe7]/95 px-4 py-3 backdrop-blur">
-        <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-3">
-          <div className="flex items-center gap-2">
-            <span className="flex size-10 items-center justify-center rounded-full bg-[#1e2a44] text-sm font-semibold text-white">C60</span>
-            <div>
-              <div className="font-semibold">What&apos;s the problem</div>
-              <div className="text-sm text-muted-foreground">{state.teamName}</div>
-            </div>
-          </div>
-          <div className="rounded-full bg-white px-3 py-1 text-sm">{state.theme}</div>
-          {["s2", "s3", "s4a", "s4b", "s4c", "s4d", "s5", "s6", "s7"].includes(state.stage) && (
-            <div className={`rounded-full px-3 py-1 text-sm ${state.summary.whoseId ? "bg-[#1e2a44] text-white" : "bg-[#fff6e4]"}`}>
-              {state.summary.whoseId
-                ? `Following ${state.stakeholders.find((card) => card.id === state.summary.whoseId)?.label ?? "someone"}`
-                : "No one chosen yet"}
-            </div>
-          )}
-          <RoomCode code={state.code} />
-          <div className="ml-auto flex items-center gap-2 overflow-x-auto">
-            <div className="flex gap-1 overflow-x-auto">
-              {PILLS.map(([id, label]) => (
-                <span
-                  key={id}
-                  className={`rounded-full px-2 py-1 text-sm ${pill === id ? "bg-[#1e2a44] text-white" : "bg-white text-[#5c6570]"}`}
-                >
-                  {label}
-                </span>
-              ))}
-            </div>
-            <Button
-              type="button"
-              variant="outline"
-              size="sm"
-              className="gap-1.5 rounded-full bg-white"
-              onClick={handleLogout}
-            >
-              <LogOut className="h-3.5 w-3.5" />
-              Log out
-            </Button>
-          </div>
-        </div>
-        {desk.seats.length > 0 && (
-          <div className="mx-auto mt-3 flex max-w-6xl flex-wrap items-center gap-2">
-            <span className="text-sm font-semibold">Move as</span>
-            {desk.seats.map((seat) => (
-              <Button
-                key={seat.id}
-                type="button"
-                variant={desk.activeId === seat.id ? "default" : "outline"}
-                className="h-11 gap-2 px-3 text-base"
-                onClick={() => sitAs(seat.id, desk)}
-              >
-                {seat.role && <RoleToken role={seat.role} size={22} />}
-                {seat.name}
-              </Button>
-            ))}
-            {desk.teacherId && (
-              <Button
-                type="button"
-                variant={desk.activeId === desk.teacherId ? "default" : "outline"}
-                className="h-11 px-3 text-base"
-                onClick={() => desk.teacherId && sitAs(desk.teacherId, desk)}
-              >
-                Teacher radar
-              </Button>
-            )}
-          </div>
+    <MotionConfig reducedMotion="user">
+      <AnimatePresence mode="wait">
+        {workshopPhase === "lobby" && (
+          <motion.div
+            key="lobby"
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -6 }}
+            transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
+          >
+            <WorkshopLobbyScreen
+              state={state}
+              isTeacher={teacher}
+              personaLabel={personaLabel}
+              personaRole={you.role}
+              saving={saving}
+              onBack={() => router.push("/")}
+              onLogout={handleLogout}
+              onStartSession={() => void act({ type: "workshop-phase", phase: "roles-intro" })}
+            />
+          </motion.div>
         )}
-      </header>
-      <main className="mx-auto grid max-w-6xl gap-4 p-4">
-        {error && <p className="rounded-2xl bg-white px-3 py-2 text-[#c63b32]" role="alert">{error}</p>}
-        {teacher && radar && (
-          <TeacherView
-            state={state}
-            radar={radar}
-            act={(action) => void act(action)}
-            saving={saving}
-            showBoard={showBoard}
-            onToggleBoard={() => setShowBoard((value) => !value)}
-            now={now}
-          />
+
+        {workshopPhase === "roles-intro" && (
+          <motion.div
+            key="roles-intro"
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -6 }}
+            transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
+          >
+            <RolesIntroScreen
+              isTeacher={teacher}
+              personaLabel={personaLabel}
+              personaRole={you.role}
+              saving={saving}
+              onBack={() => void act({ type: "workshop-phase", phase: "lobby" })}
+              onLogout={handleLogout}
+              onContinue={() => void act({ type: "workshop-phase", phase: "roles-deal" })}
+            />
+          </motion.div>
         )}
-        {(!teacher || showBoard) && (
-          <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_340px]">
-            {!teacher && (
-              <div className="min-w-0 lg:order-2 lg:self-start">
-                <YourMove
-                  state={state}
-                  youId={you.id}
-                  role={you.role}
-                  meter={meter}
-                  act={(action) => act(action)}
-                  saving={saving}
-                  error={error}
-                  selected={selected}
-                  onSelect={choose}
-                />
+
+        {workshopPhase === "roles-deal" && (
+          <motion.div
+            key="roles-deal"
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -6 }}
+            transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
+          >
+            <RolesDealScreen
+              state={state}
+              isTeacher={teacher}
+              personaLabel={personaLabel}
+              personaRole={you.role}
+              saving={saving}
+              onBack={() => void act({ type: "workshop-phase", phase: "roles-intro" })}
+              onLogout={handleLogout}
+              onSpinRoles={async (spinAction) => {
+                await act(spinAction);
+              }}
+              onStartWorkshop={() => void act({ type: "workshop-phase", phase: "live" })}
+            />
+          </motion.div>
+        )}
+
+        {workshopPhase === "live" && (
+          <motion.div
+            key="live"
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -6 }}
+            transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
+            className="min-h-screen overflow-x-hidden"
+          >
+            <header className="sticky top-0 z-20 border-b border-[#e4dcd0] bg-[#f3efe7]/95 px-4 py-2.5 backdrop-blur">
+              <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-3">
+                <div className="flex items-center gap-2.5">
+                  <span className="flex size-9 items-center justify-center rounded-xl bg-[#1e2a44] text-sm font-semibold text-white">C60</span>
+                  <div>
+                    <div className="font-semibold leading-tight text-[#1c2430]">What&apos;s the problem</div>
+                    <div className="text-xs text-[#5c6570]">
+                      {state.teamName} · {state.theme}
+                    </div>
+                  </div>
+                </div>
+                {["s2", "s3", "s4a", "s4b", "s4c", "s4d", "s5", "s6", "s7"].includes(state.stage) && (
+                  <div className={`rounded-xl border px-3 py-1 text-xs font-medium ${state.summary.whoseId ? "border-[#0E948C]/40 bg-[#f1fbf9] text-[#0c6b65]" : "border-[#e4dcd0] bg-[#fff6e4] text-[#8A5A08]"}`}>
+                    {state.summary.whoseId
+                      ? `Following ${state.stakeholders.find((card) => card.id === state.summary.whoseId)?.label ?? "someone"}`
+                      : "No one chosen yet"}
+                  </div>
+                )}
+                <RoomCode code={state.code} />
+                <div className="ml-auto flex items-center gap-2.5">
+                  <span className="hidden text-xs font-semibold text-[#1e2a44] tabular-nums sm:inline">
+                    Step {stepIndex + 1} of {PILLS.length} · {stepLabel}
+                  </span>
+                  <div className="flex items-center gap-2 rounded-xl border border-[#e4dcd0] bg-white px-2.5 py-1 text-xs font-medium text-[#1c2430]">
+                    {teacher ? (
+                      <TeacherPortrait size={24} />
+                    ) : you.role ? (
+                      <RolePortrait role={you.role} size={24} />
+                    ) : null}
+                    <span className="max-w-[140px] truncate">{teacher ? "Teacher" : you.name}</span>
+                  </div>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    className="h-9 gap-1.5 rounded-xl bg-white"
+                    onClick={handleLogout}
+                  >
+                    <LogOut className="h-3.5 w-3.5" />
+                    Log out
+                  </Button>
+                </div>
               </div>
-            )}
-            <div className="grid min-w-0 gap-3 overflow-x-hidden lg:order-1">
-              <div>
-                <h1 className="text-2xl font-semibold">{screen.title}</h1>
-                {purpose && <p className="mt-2 max-w-3xl rounded-2xl bg-white px-3 py-3">{purpose}</p>}
-                <p className="mt-2 max-w-3xl font-semibold">{editBanner(state, you.role).you}</p>
-                <p className="mt-1 max-w-3xl text-[#3c4654]">{editBanner(state, you.role).board}</p>
-              </div>
-              {!teacher && <StudentFilms state={state} />}
-              {state.stage === "s3" && (
-                <InterviewPanel
+              {desk.seats.length > 0 && (
+                <div className="mx-auto mt-2.5 flex max-w-6xl flex-wrap items-center gap-2">
+                  <span className="text-xs font-semibold text-[#5c6570]">Move as</span>
+                  {desk.seats.map((seat) => (
+                    <Button
+                      key={seat.id}
+                      type="button"
+                      variant={desk.activeId === seat.id ? "default" : "outline"}
+                      className="h-10 gap-2 px-3 text-sm"
+                      onClick={() => sitAs(seat.id, desk)}
+                    >
+                      {seat.role && <RoleToken role={seat.role} size={22} />}
+                      {seat.name}
+                    </Button>
+                  ))}
+                  {desk.teacherId && (
+                    <Button
+                      type="button"
+                      variant={desk.activeId === desk.teacherId ? "default" : "outline"}
+                      className="h-10 px-3 text-sm"
+                      onClick={() => desk.teacherId && sitAs(desk.teacherId, desk)}
+                    >
+                      Teacher radar
+                    </Button>
+                  )}
+                </div>
+              )}
+            </header>
+            {!teacher ? (
+              <main className="min-w-0">
+                {error && (
+                  <div className="mx-auto max-w-6xl px-4 pt-3">
+                    <p className="rounded-2xl bg-white px-3 py-2 text-[#c63b32]" role="alert">
+                      {error}
+                    </p>
+                  </div>
+                )}
+                <WindingCanvas
                   code={code}
                   version={presented.version}
                   state={state}
                   youId={you.id}
-                  canAsk={you.role === "interviewer"}
+                  role={you.role}
+                  selected={selected}
+                  onSelect={choose}
+                  act={(action) => void act(action)}
+                  readOnly={false}
+                  now={now}
+                  sidebar={
+                    <YourMove
+                      state={state}
+                      youId={you.id}
+                      role={you.role}
+                      meter={meter}
+                      act={(action) => act(action)}
+                      saving={saving}
+                      error={error}
+                      selected={selected}
+                      onSelect={choose}
+                    />
+                  }
                 />
-              )}
-              <Board
-                state={state}
-                role={you.role}
-                selected={selected}
-                onSelect={choose}
-                act={(action) => void act(action)}
-                readOnly={teacher}
-                now={now}
-              />
-            </div>
-          </div>
+              </main>
+            ) : (
+              <main className="mx-auto grid max-w-6xl gap-4 p-4">
+                {error && <p className="rounded-2xl bg-white px-3 py-2 text-[#c63b32]" role="alert">{error}</p>}
+                {radar && (
+                  <TeacherView
+                    state={state}
+                    radar={radar}
+                    act={(action) => void act(action)}
+                    saving={saving}
+                    showBoard={showBoard}
+                    onToggleBoard={() => setShowBoard((value) => !value)}
+                    now={now}
+                  />
+                )}
+                {showBoard && (
+                  <div className="grid min-w-0 gap-3 overflow-x-hidden">
+                    <div>
+                      <h1 className="text-2xl font-semibold">{screen.title}</h1>
+                      {purpose && <p className="mt-2 max-w-3xl rounded-2xl bg-white px-3 py-3">{purpose}</p>}
+                      <p className="mt-2 max-w-3xl font-semibold">{editBanner(state, you.role).you}</p>
+                      <p className="mt-1 max-w-3xl text-[#3c4654]">{editBanner(state, you.role).board}</p>
+                    </div>
+                    {state.stage === "s3" && (
+                      <InterviewPanel
+                        code={code}
+                        version={presented.version}
+                        state={state}
+                        youId={you.id}
+                        canAsk={false}
+                      />
+                    )}
+                    <Board
+                      state={state}
+                      role={you.role}
+                      youId={you.id}
+                      selected={selected}
+                      onSelect={choose}
+                      act={(action) => void act(action)}
+                      readOnly
+                      now={now}
+                    />
+                  </div>
+                )}
+              </main>
+            )}
+          </motion.div>
         )}
-      </main>
-    </div>
+      </AnimatePresence>
+    </MotionConfig>
   );
 }
 

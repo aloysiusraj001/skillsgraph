@@ -1,8 +1,9 @@
 "use client";
 
 import { useState, type DragEvent as ReactDragEvent } from "react";
-import { CheckCircle2, Compass, CornerDownRight, Flag, MessageSquareQuote, MessagesSquare, Pencil, Pin as PinIcon, Shapes, Target } from "lucide-react";
-import { RoleToken } from "@/components/role-token";
+import { AnimatePresence, motion } from "motion/react";
+import { Check, CheckCircle2, Compass, CornerDownRight, Flag, MessageSquareQuote, MessagesSquare, Pencil, Pin as PinIcon, Shapes, Target } from "lucide-react";
+import { RolePortrait, RoleToken } from "@/components/role-token";
 import {
   PLANTED_LABEL,
   ROLES,
@@ -16,6 +17,7 @@ import {
   type Quadrant,
   type RoleId,
   type RoomState,
+  type StageId,
   type Stakeholder,
 } from "@/lib/domain";
 import { BONE_HINTS } from "@/lib/copy";
@@ -30,6 +32,21 @@ const PHASES = [
   { label: "Decide & act", hint: "Choosing what's next", icon: Flag, stages: ["s6", "s7"] },
 ];
 
+const STAGE_STOPS = [
+  { id: "s0", label: "Start" },
+  { id: "s1", label: "People" },
+  { id: "s1b", label: "Merge" },
+  { id: "s2", label: "Power" },
+  { id: "s3", label: "Incident" },
+  { id: "s4a", label: "Causes" },
+  { id: "s4b", label: "Choose" },
+  { id: "s4c", label: "Why" },
+  { id: "s4d", label: "Pin" },
+  { id: "s5", label: "Statement" },
+  { id: "s6", label: "Choose 3" },
+  { id: "s7", label: "Pack" },
+] as const;
+
 const QUADS: { power: "high" | "low"; interest: "high" | "low"; hint: string }[] = [
   { power: "low", interest: "high", hint: "Keep involved" },
   { power: "high", interest: "high", hint: "Work closely" },
@@ -40,6 +57,7 @@ const QUADS: { power: "high" | "low"; interest: "high" | "low"; hint: string }[]
 export function Board({
   state,
   role,
+  youId,
   selected,
   onSelect,
   act,
@@ -48,6 +66,7 @@ export function Board({
 }: {
   state: RoomState;
   role: RoleId | null;
+  youId?: string;
   selected: string | null;
   onSelect: (id: string | null) => void;
   act: (action: Action) => void;
@@ -58,24 +77,34 @@ export function Board({
     <section className="min-w-0 rounded-3xl border bg-white p-4 shadow-none">
       <StageTrack stage={state.stage} />
       <div className="mt-4">
-        {state.stage === "s0" && <Orbit state={state} />}
-        {state.stage === "s1" && <SilentPile state={state} selected={selected} onSelect={onSelect} />}
-        {state.stage === "s1b" && (
-          <Pile state={state} selected={selected} onSelect={onSelect} act={act} role={role} readOnly={readOnly} />
-        )}
-        {state.stage === "s2" && (
-          <PowerMap state={state} selected={selected} onSelect={onSelect} act={act} role={role} readOnly={readOnly} />
-        )}
-        {state.stage === "s3" && <Incidents state={state} act={act} role={role} readOnly={readOnly} />}
-        {(state.stage === "s4a" || state.stage === "s4b" || state.stage === "s4c" || state.stage === "s4d") && (
-          <Fish state={state} selected={selected} onSelect={onSelect} act={act} role={role} readOnly={readOnly} />
-        )}
-        {(state.stage === "s5" || state.stage === "s6") && (
-          <Statements state={state} selected={selected} onSelect={onSelect} />
-        )}
-        {state.stage === "s7" && <Pack state={state} />}
+        <AnimatePresence mode="wait" initial={false}>
+          <motion.div
+            key={state.stage}
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -6 }}
+            transition={{ duration: 0.18, ease: "easeOut" }}
+          >
+            {state.stage === "s0" && <Orbit state={state} youId={youId} />}
+            {state.stage === "s1" && <SilentPile state={state} selected={selected} onSelect={onSelect} />}
+            {state.stage === "s1b" && (
+              <Pile state={state} selected={selected} onSelect={onSelect} act={act} role={role} readOnly={readOnly} />
+            )}
+            {state.stage === "s2" && (
+              <PowerMap state={state} selected={selected} onSelect={onSelect} act={act} role={role} readOnly={readOnly} />
+            )}
+            {state.stage === "s3" && <Incidents state={state} act={act} role={role} readOnly={readOnly} />}
+            {(state.stage === "s4a" || state.stage === "s4b" || state.stage === "s4c" || state.stage === "s4d") && (
+              <Fish state={state} selected={selected} onSelect={onSelect} act={act} role={role} readOnly={readOnly} />
+            )}
+            {(state.stage === "s5" || state.stage === "s6") && (
+              <Statements state={state} selected={selected} onSelect={onSelect} />
+            )}
+            {state.stage === "s7" && <Pack state={state} />}
+          </motion.div>
+        </AnimatePresence>
       </div>
-      <p className="mt-3 text-sm text-muted-foreground">
+      <p className="mt-3 text-sm text-muted-foreground tabular-nums">
         {state.timer.running && state.timer.endsAt
           ? `Timer ${formatMs(state.timer.endsAt - now)}`
           : state.timer.expired
@@ -87,69 +116,227 @@ export function Board({
 }
 
 function StageTrack({ stage }: { stage: string }) {
+  const activePhaseIndex = Math.max(0, PHASES.findIndex((p) => p.stages.includes(stage)));
+  const activeStopIndex = Math.max(0, STAGE_STOPS.findIndex((s) => s.id === stage));
+  const roadPct = PHASES.length > 1 ? (activePhaseIndex / (PHASES.length - 1)) * 100 : 0;
+
   return (
-    <ol className="grid min-w-0 gap-2 sm:grid-cols-5">
-      {PHASES.map((phase) => {
-        const on = phase.stages.includes(stage);
-        const Icon = phase.icon;
-        return (
-          <li
-            key={phase.label}
-            className={cn(
-              "flex min-w-0 items-center gap-2 rounded-2xl border px-3 py-2",
-              on ? "border-[#1e2a44] bg-[#1e2a44] text-white" : "bg-[#faf8f4] text-[#1c2430]",
-            )}
-          >
-            <Icon className="size-4 shrink-0" aria-hidden />
-            <span>
-              <span className="block font-semibold">{phase.label}</span>
-              <span className={cn("block text-sm", on ? "text-white/80" : "text-muted-foreground")}>{phase.hint}</span>
-            </span>
-          </li>
-        );
-      })}
-    </ol>
+    <div className="grid gap-3">
+      <div className="relative">
+        {/* Continuous Wayfinder progress road connecting the 5 phase cards */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute left-[10%] right-[10%] top-1/2 hidden h-1.5 -translate-y-1/2 overflow-hidden rounded-full bg-[#e6dfd3] sm:block"
+        >
+          <motion.div
+            className="h-full origin-left rounded-full bg-[#0E948C]"
+            initial={false}
+            animate={{ width: `${roadPct}%` }}
+            transition={{ duration: 0.25, ease: "easeOut" }}
+          />
+        </div>
+
+        <ol className="relative z-10 grid min-w-0 gap-2 sm:grid-cols-5">
+          {PHASES.map((phase, index) => {
+            const on = index === activePhaseIndex;
+            const done = index < activePhaseIndex;
+            const Icon = phase.icon;
+            return (
+              <li
+                key={phase.label}
+                aria-current={on ? "step" : undefined}
+                className={cn(
+                  "flex min-w-0 items-center gap-2.5 rounded-2xl border px-3 py-2.5 transition-colors",
+                  on
+                    ? "border-[#1e2a44] bg-[#1e2a44] text-white shadow-[0_3px_0_0_#111828]"
+                    : done
+                      ? "border-[#0E948C]/40 bg-[#eefaf8] text-[#1c2430]"
+                      : "border-[#e4dcd0] bg-[#faf8f4] text-[#1c2430]",
+                )}
+              >
+                <span
+                  className={cn(
+                    "flex size-7 shrink-0 items-center justify-center rounded-xl",
+                    on
+                      ? "bg-white/15 text-white"
+                      : done
+                        ? "bg-[#0E948C] text-white"
+                        : "bg-white text-[#5c6570]",
+                  )}
+                >
+                  {done ? <Check className="size-4" aria-hidden /> : <Icon className="size-4" aria-hidden />}
+                </span>
+                <span className="min-w-0">
+                  <span className="block truncate text-sm font-semibold leading-tight">{phase.label}</span>
+                  <span
+                    className={cn(
+                      "block truncate text-xs leading-snug",
+                      on ? "text-white/80" : done ? "text-[#0c6b65]" : "text-muted-foreground",
+                    )}
+                  >
+                    {phase.hint}
+                  </span>
+                </span>
+              </li>
+            );
+          })}
+        </ol>
+      </div>
+
+      {/* Clean 12-stop sub-step strip */}
+      <div className="flex flex-wrap items-center justify-between gap-2 rounded-2xl bg-[#faf8f4] px-3 py-2 text-xs">
+        <span className="font-semibold text-[#1e2a44] tabular-nums">
+          Step {activeStopIndex + 1} of {STAGE_STOPS.length} · {STAGE_STOPS[activeStopIndex]?.label}
+        </span>
+        <ol className="flex flex-wrap items-center gap-x-2.5 gap-y-1" aria-label="Activity steps">
+          {STAGE_STOPS.map((stop, idx) => {
+            const isCurrent = idx === activeStopIndex;
+            const isDone = idx < activeStopIndex;
+            return (
+              <li
+                key={stop.id}
+                aria-current={isCurrent ? "step" : undefined}
+                className={cn(
+                  "relative inline-flex items-center gap-1 font-medium transition-colors",
+                  isCurrent
+                    ? "font-semibold text-[#1e2a44]"
+                    : isDone
+                      ? "text-[#0c6b65]"
+                      : "text-[#838b95]",
+                )}
+              >
+                {isDone ? (
+                  <Check className="size-3 text-[#0E948C]" aria-hidden />
+                ) : isCurrent ? (
+                  <motion.span
+                    layoutId="board-step-active"
+                    className="size-2 rounded-full bg-[#1e2a44]"
+                    transition={{ type: "spring", stiffness: 420, damping: 32 }}
+                    aria-hidden
+                  />
+                ) : (
+                  <span className="size-1.5 rounded-full bg-[#d4ccc0]" aria-hidden />
+                )}
+                <span>{stop.label}</span>
+              </li>
+            );
+          })}
+        </ol>
+      </div>
+    </div>
   );
 }
 
-function Orbit({ state }: { state: RoomState }) {
+export function Orbit({ state, youId }: { state: RoomState; youId?: string }) {
   const seats = [
-    { role: "leader" as const, className: "left-[4%] top-[8%]" },
-    { role: "interviewer" as const, className: "right-[4%] top-[8%]" },
-    { role: "mapper" as const, className: "left-[2%] bottom-[12%]" },
-    { role: "insight" as const, className: "right-[2%] top-[42%]" },
-    { role: "devil" as const, className: "left-[36%] bottom-[4%]" },
+    { role: "leader" as const, className: "left-[3%] top-[6%]", spoke: { x: 185, y: 92 } },
+    { role: "interviewer" as const, className: "right-[3%] top-[6%]", spoke: { x: 575, y: 92 } },
+    { role: "mapper" as const, className: "left-[2%] bottom-[10%]", spoke: { x: 175, y: 375 } },
+    { role: "insight" as const, className: "right-[2%] top-[41%]", spoke: { x: 605, y: 245 } },
+    { role: "devil" as const, className: "left-[35%] bottom-[3%]", spoke: { x: 380, y: 400 } },
   ];
-  return (
-    <div className="relative mx-auto h-[460px] max-w-[760px]">
-      <svg className="absolute inset-0 h-full w-full" viewBox="0 0 760 460" aria-hidden>
-        <circle cx="380" cy="210" r="150" fill="none" stroke="#e4dcd0" strokeDasharray="6 8" />
-        <circle cx="380" cy="210" r="92" fill="none" stroke="#efeae1" />
-      </svg>
-      <div className="absolute left-1/2 top-[168px] w-48 -translate-x-1/2 rounded-3xl border border-[#d9c8f5] bg-[#f6f1ff] px-4 py-4 text-center">
-        <div className="text-sm text-[#5c6570]">Our problem hub</div>
-        <div className="font-semibold">{state.theme}</div>
-        <div className="mt-1 text-sm text-[#5c6570]">{state.teamName}</div>
-      </div>
-      {seats.map((spot) => {
-        const personSeat = state.participants.find((item) => item.role === spot.role);
-        const role = ROLES[spot.role];
-        return (
-          <article key={spot.role} className={cn("absolute w-52 rounded-2xl border bg-white p-3", spot.className)} style={{ borderColor: role.color }}>
-            <div className="flex items-center gap-2">
-              <RoleToken role={spot.role} size={36} />
-              <div>
-                <div className="font-semibold" style={{ color: role.color }}>{role.name}</div>
-                <div className="text-sm">{personSeat?.name ?? "Empty seat"}</div>
-              </div>
+
+  function renderSeatCard(spotRole: RoleId, extraClass?: string) {
+    const personSeat = state.participants.find((item) => item.role === spotRole);
+    const roleMeta = ROLES[spotRole];
+    const isYou = Boolean(youId && personSeat?.id === youId);
+    const isReady = Boolean(personSeat?.claimed && personSeat.ready);
+
+    return (
+      <article
+        key={spotRole}
+        className={cn(
+          "rounded-2xl border-2 bg-white p-3 transition-shadow",
+          isYou && "shadow-[0_4px_0_0_rgba(30,42,68,0.12)] ring-2 ring-[#1e2a44]/20",
+          extraClass,
+        )}
+        style={{ borderColor: roleMeta.color }}
+      >
+        <div className="flex items-center gap-2.5">
+          <RolePortrait role={spotRole} size={44} className="shrink-0" />
+          <div className="min-w-0">
+            <div className="flex flex-wrap items-center gap-1.5">
+              <span className="truncate font-semibold" style={{ color: roleMeta.color }}>
+                {roleMeta.name}
+              </span>
+              {isYou && (
+                <span className="text-xs font-semibold text-[#1e2a44]">· You</span>
+              )}
             </div>
-            <p className="mt-2 text-sm text-[#3c4654]">{role.job}</p>
-            <p className="mt-1 text-sm text-muted-foreground">
-              {personSeat?.claimed ? (personSeat.ready ? "Ready" : "Joined") : "Waiting to join"}
-            </p>
-          </article>
-        );
-      })}
+            <div className="truncate text-sm font-medium text-[#1c2430]">
+              {personSeat?.name ?? "Empty seat"}
+            </div>
+          </div>
+        </div>
+        <p className="mt-2 text-sm text-[#3c4654]">{roleMeta.job}</p>
+        <div className="mt-1.5 flex items-center gap-1.5 text-sm">
+          {isReady ? (
+            <span className="inline-flex items-center gap-1 font-medium text-[#0c6b65]">
+              <CheckCircle2 className="size-3.5 text-[#0E948C]" aria-hidden />
+              Ready
+            </span>
+          ) : (
+            <span className="text-muted-foreground">
+              {personSeat?.claimed ? "Joined" : "Waiting to join"}
+            </span>
+          )}
+        </div>
+      </article>
+    );
+  }
+
+  return (
+    <div>
+      {/* Responsive stacked layout on small screens */}
+      <div className="grid gap-3 md:hidden">
+        <div className="rounded-3xl border border-[#d9c8f5] bg-[#f6f1ff] px-4 py-4 text-center">
+          <div className="text-sm text-[#5c6570]">Our problem hub</div>
+          <div className="text-lg font-semibold text-[#1e2a44]">{state.theme}</div>
+          <div className="mt-0.5 text-sm text-[#5c6570]">{state.teamName}</div>
+        </div>
+        <div className="grid gap-3 sm:grid-cols-2">
+          {seats.map((spot) => renderSeatCard(spot.role))}
+        </div>
+      </div>
+
+      {/* Radial hub layout on md+ */}
+      <div className="relative mx-auto hidden h-[476px] max-w-[780px] md:block">
+        <svg className="absolute inset-0 h-full w-full" viewBox="0 0 760 476" aria-hidden>
+          {seats.map((spot) => (
+            <line
+              key={spot.role}
+              x1="380"
+              y1="215"
+              x2={spot.spoke.x}
+              y2={spot.spoke.y}
+              stroke="#e6dfd3"
+              strokeWidth="1.75"
+              strokeDasharray="4 6"
+            />
+          ))}
+          <motion.circle
+            cx="380"
+            cy="215"
+            r="154"
+            fill="none"
+            stroke="#e4dcd0"
+            strokeWidth="1.5"
+            strokeDasharray="6 8"
+            style={{ transformOrigin: "380px 215px" }}
+            animate={{ rotate: 360 }}
+            transition={{ duration: 90, repeat: Infinity, ease: "linear" }}
+          />
+          <circle cx="380" cy="215" r="96" fill="none" stroke="#efeae1" />
+        </svg>
+
+        <div className="absolute left-1/2 top-[156px] w-52 -translate-x-1/2 rounded-3xl border-2 border-[#d9c8f5] bg-[#f6f1ff] px-4 py-4 text-center shadow-[0_4px_0_0_#e7dcfa]">
+          <div className="text-xs font-semibold uppercase tracking-wide text-[#7A45D6]">Our problem hub</div>
+          <div className="mt-0.5 font-semibold text-[#1e2a44]">{state.theme}</div>
+          <div className="mt-1 text-sm text-[#5c6570]">{state.teamName}</div>
+        </div>
+
+        {seats.map((spot) => renderSeatCard(spot.role, cn("absolute w-52", spot.className)))}
+      </div>
     </div>
   );
 }
@@ -254,7 +441,7 @@ function CardFace({
   );
 }
 
-function SilentPile({
+export function SilentPile({
   state,
   selected,
   onSelect,
@@ -299,7 +486,7 @@ function SilentPile({
   );
 }
 
-function Pile({
+export function Pile({
   state,
   selected,
   onSelect,
@@ -370,7 +557,7 @@ function Pile({
   );
 }
 
-function PowerMap({
+export function PowerMap({
   state,
   selected,
   onSelect,
@@ -531,7 +718,7 @@ function FollowPick({
   );
 }
 
-function Incidents({
+export function Incidents({
   state,
   act,
   role,
@@ -610,13 +797,14 @@ function hasDescendantRoot(hops: Hop[], parentId: string): boolean {
   return direct.some((hop) => Boolean(hop.root) || hasDescendantRoot(hops, hop.id));
 }
 
-function Fish({
+export function Fish({
   state,
   selected,
   onSelect,
   act,
   role,
   readOnly,
+  stageOverride,
 }: {
   state: RoomState;
   selected: string | null;
@@ -624,13 +812,15 @@ function Fish({
   act: (action: Action) => void;
   role: RoleId | null;
   readOnly: boolean;
+  stageOverride?: StageId;
 }) {
+  const activeStage = stageOverride ?? state.stage;
   const incident = lockedIncident(state);
   const following = roots(state).find((card) => card.id === state.summary.whoseId);
   const top = state.bones.slice(0, 3);
   const bottom = state.bones.slice(3, 6);
   const tray = state.causes.filter((cause) => !cause.bone);
-  const canMove = role === "mapper" && !readOnly && state.stage === "s4a";
+  const canMove = role === "mapper" && !readOnly && activeStage === "s4a";
   const focusBone = state.bones.find((bone) => bone.id === state.focusBone) ?? null;
 
   function isGlowing(boneId: BoneLabel["id"]) {
@@ -638,18 +828,18 @@ function Fish({
   }
 
   function isDimmed(boneId: BoneLabel["id"]) {
-    return Boolean(state.focusBone) && state.focusBone !== boneId && (state.stage === "s4c" || state.stage === "s4d");
+    return Boolean(state.focusBone) && state.focusBone !== boneId && (activeStage === "s4c" || activeStage === "s4d");
   }
 
   return (
     <div className="grid gap-4">
       <p className="rounded-2xl border border-[#e4dcd0] bg-[#faf8f4] px-3.5 py-3 text-sm leading-relaxed text-[#1c2430] sm:text-base">
         {following ? `Following ${following.label}. ` : ""}
-        {state.stage === "s4a"
+        {activeStage === "s4a"
           ? "Each bone is one kind of cause leading to the incident in the fish head. Pick a bone on the right and add a cause."
-          : state.stage === "s4b"
+          : activeStage === "s4b"
             ? "Review the causes on all six bones, then tap the one bone the team will follow into the five Whys."
-            : state.stage === "s4d"
+            : activeStage === "s4d"
               ? "Carry 1 to 3 causes forward into problem statements: Obstacle (cause) + Insight (root Why) + Harm (fish head)."
               : focusBone
                 ? `Digging into ${focusBone.label}. Select a cause or Why below to grow the next Why, or mark one Why as the root cause.`
@@ -1398,7 +1588,7 @@ function FishHead({ title, text }: { title: string; text: string }) {
   );
 }
 
-function Statements({
+export function Statements({
   state,
   selected,
   onSelect,
@@ -1448,7 +1638,7 @@ function Statements({
   );
 }
 
-function Pack({ state }: { state: RoomState }) {
+export function Pack({ state }: { state: RoomState }) {
   const top = state.top3.map((id) => state.statements.find((card) => card.id === id)).filter((card) => card);
   return (
     <div className="grid gap-3 lg:grid-cols-3">

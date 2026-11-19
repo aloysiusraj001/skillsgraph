@@ -3,7 +3,7 @@
 import { useEffect, useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowRight, Calendar, LogOut, Plus, Users } from "lucide-react";
-import { RoleToken } from "@/components/role-token";
+import { RolePortrait, TeacherPortrait } from "@/components/role-token";
 import { SkillGraphLogo } from "@/components/skillgraph/logo";
 import type { DemoPersona } from "@/components/skillgraph/persona";
 import { Button } from "@/components/ui/button";
@@ -212,7 +212,12 @@ export function DashboardScreen({
         <div className="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-3">
           <SkillGraphLogo compact />
           <div className="flex flex-wrap items-center gap-3">
-            <span className="inline-flex items-center gap-2 rounded-full bg-[#EEF3F8] px-3.5 py-1.5 text-sm font-medium text-[#1E293B]">
+            <span className="inline-flex items-center gap-2 rounded-xl border border-[#E2E8F0] bg-[#F8FAFC] px-3 py-1.5 text-sm font-medium text-[#1E293B]">
+              {persona.kind === "teacher" ? (
+                <TeacherPortrait size={26} />
+              ) : (
+                <RolePortrait role={persona.role} size={26} />
+              )}
               {persona.kind === "teacher"
                 ? "Teacher"
                 : `${persona.name} · ${ROLES[persona.role].name}`}
@@ -454,10 +459,10 @@ export function DashboardScreen({
           </div>
         </section>
 
-        <div className="flex flex-wrap gap-3 opacity-80">
+        <div className="flex flex-wrap gap-3 opacity-90">
           {ROLE_ORDER.map((role) => (
-            <span key={role} className="inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-1 text-xs font-medium text-[#475569]">
-              <RoleToken role={role} size={18} />
+            <span key={role} className="inline-flex items-center gap-2 rounded-xl border border-[#E5EAF2] bg-white px-3 py-1.5 text-xs font-medium text-[#475569]">
+              <RolePortrait role={role} size={24} />
               {ROLES[role].name}
             </span>
           ))}

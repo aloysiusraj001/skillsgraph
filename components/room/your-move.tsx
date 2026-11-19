@@ -1,8 +1,10 @@
 "use client";
 
 import { useEffect, useRef, useState, type ReactNode } from "react";
+import { AnimatePresence, motion } from "motion/react";
+import { Check, CheckCircle2, Circle } from "lucide-react";
 import { HelpDialog } from "@/components/help-dialog";
-import { RoleToken } from "@/components/role-token";
+import { RolePortrait } from "@/components/role-token";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -50,35 +52,127 @@ export function YourMove({
   const screen = SCREENS[state.stage];
   const tone = role ? ROLES[role] : null;
   const dots = you && you.kind === "student" ? checklistFor(state, you) : [];
+  const doneCount = dots.filter((dot) => dot.done).length;
+  const progressDeg = dots.length > 0 ? Math.round((doneCount / dots.length) * 360) : 0;
+  const ringColor = doneCount > 0 && doneCount === dots.length ? "#0E948C" : tone?.color ?? "#0E948C";
+
+  const [savedVisible, setSavedVisible] = useState(false);
+  const savedTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (savedTimerRef.current) clearTimeout(savedTimerRef.current);
+    };
+  }, []);
+
+  async function trackedAct(action: Action): Promise<boolean> {
+    const result = await act(action);
+    if (result === true) {
+      setSavedVisible(true);
+      if (savedTimerRef.current) clearTimeout(savedTimerRef.current);
+      savedTimerRef.current = setTimeout(() => {
+        setSavedVisible(false);
+      }, 1500);
+      return true;
+    }
+    return false;
+  }
+
   return (
     <aside
-      className="w-full rounded-3xl border-2 bg-[#fff6e4] p-4"
+      className="w-full rounded-3xl border-2 bg-[#fff6e4] p-4 shadow-[0_4px_0_0_rgba(28,36,48,0.06)]"
       style={{ borderColor: tone?.color ?? "#e4dcd0" }}
     >
-      <div className="text-sm font-semibold" style={{ color: tone?.color ?? "#1c2430" }}>Your move</div>
-      <div className="mt-2 flex items-center gap-2">
-        {role && <RoleToken role={role} size={40} />}
-        <div>
-          <div className="font-semibold">{tone?.name ?? "Waiting for a role"}</div>
-          <div className="text-sm">{you?.name}</div>
+      <div className="flex items-center justify-between gap-2">
+        <div className="text-sm font-semibold" style={{ color: tone?.color ?? "#1c2430" }}>
+          Your move
+        </div>
+        <AnimatePresence>
+          {savedVisible && (
+            <motion.span
+              initial={{ opacity: 0, y: -4 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -4 }}
+              transition={{ duration: 0.16, ease: "easeOut" }}
+              className="inline-flex items-center gap-1 text-xs font-semibold text-[#0c6b65]"
+              role="status"
+            >
+              <Check className="size-3.5 text-[#0E948C]" aria-hidden />
+              Saved
+            </motion.span>
+          )}
+        </AnimatePresence>
+      </div>
+
+      <div className="mt-2.5 flex items-center gap-3">
+        {role && (
+          <div
+            className="shrink-0 rounded-full p-[3px] transition-all"
+            style={{
+              background:
+                dots.length > 0
+                  ? `conic-gradient(${ringColor} ${progressDeg}deg, #e6dfd3 ${progressDeg}deg)`
+                  : "#e6dfd3",
+            }}
+            aria-hidden={false}
+          >
+            <div className="rounded-full bg-[#fff6e4] p-[2px]">
+              <RolePortrait role={role} size={48} />
+            </div>
+          </div>
+        )}
+        <div className="min-w-0 flex-1">
+          <div className="truncate font-semibold text-[#1c2430]">{tone?.name ?? "Waiting for a role"}</div>
+          <div className="truncate text-sm text-[#3c4654]">{you?.name}</div>
+          {dots.length > 0 && (
+            <div className="mt-0.5 text-xs font-semibold text-[#0c6b65] tabular-nums">
+              {doneCount} of {dots.length} done
+            </div>
+          )}
         </div>
       </div>
-      <p className="mt-3 text-base">{role ? screen.move[role] : "Your role is blank. Ask your teacher to assign roles before Start."}</p>
+
+      <p className="mt-3 text-base leading-relaxed text-[#1c2430]">
+        {role ? screen.move[role] : "Your role is blank. Ask your teacher to assign roles before Start."}
+      </p>
+
       {dots.length > 0 && (
-        <ul className="mt-3 grid gap-1">
+        <ul className="mt-3 grid gap-1.5 rounded-2xl border border-[#efe5d0] bg-white/75 p-2.5">
           {dots.map((dot) => (
-            <li key={dot.label} className="text-sm">
-              <span aria-hidden>{dot.done ? "●" : "○"} </span>
-              {dot.label}
-            </li>
+            <motion.li
+              key={dot.label}
+              initial={{ opacity: 0, x: -4 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.16, ease: "easeOut" }}
+              className="flex items-start gap-2 text-sm"
+            >
+              {dot.done ? (
+                <CheckCircle2 className="mt-0.5 size-4 shrink-0 text-[#0E948C]" aria-hidden />
+              ) : (
+                <Circle className="mt-0.5 size-4 shrink-0 text-[#8b939e]" aria-hidden />
+              )}
+              <span className={dot.done ? "font-medium text-[#1c2430]" : "text-[#3c4654]"}>
+                {dot.label}
+              </span>
+            </motion.li>
           ))}
         </ul>
       )}
+
       <div className="mt-4 grid gap-2">
-        <Controls state={state} role={role} act={act} saving={saving} meter={meter} selected={selected} onSelect={onSelect} youId={youId} />
+        <Controls
+          state={state}
+          role={role}
+          act={trackedAct}
+          saving={saving}
+          meter={meter}
+          selected={selected}
+          onSelect={onSelect}
+          youId={youId}
+        />
       </div>
       {error && (
-        <p className="mt-3 rounded-xl bg-white px-3 py-2 text-base" role="alert">
+        <p className="mt-3 rounded-xl bg-white px-3 py-2 text-base text-[#c63b32]" role="alert">
           {error}
         </p>
       )}
@@ -107,10 +201,18 @@ function MoveButton({
     <Button
       type="button"
       variant={outline ? "outline" : "default"}
-      className="h-11 min-h-11 w-full px-4 text-base"
+      className="h-11 min-h-11 w-full px-4 text-base transition-transform active:translate-y-[1px]"
       disabled={disabled}
       onClick={onClick}
-      style={!outline && tone && !disabled ? { background: tone.color, color: tone.ink } : undefined}
+      style={
+        !outline && tone && !disabled
+          ? {
+              background: tone.color,
+              color: tone.ink,
+              boxShadow: "0 2px 0 0 rgba(28, 36, 48, 0.18)",
+            }
+          : undefined
+      }
     >
       {children}
     </Button>
