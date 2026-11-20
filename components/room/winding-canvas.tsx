@@ -52,6 +52,7 @@ import { InterviewPanel } from "@/components/room/interview-panel";
 import { Button } from "@/components/ui/button";
 import { SCREENS, STEP_PURPOSE } from "@/lib/copy";
 import {
+  ROLES,
   formatMs,
   type Action,
   type RoleId,
@@ -61,6 +62,16 @@ import {
 import { editBanner } from "@/lib/editing";
 import { lockedIncident, roots } from "@/lib/game";
 import { cn } from "cn";
+
+function initialsFor(name: string): string {
+  return name
+    .trim()
+    .split(/\s+/)
+    .map((word) => word[0] ?? "")
+    .join("")
+    .slice(0, 2)
+    .toUpperCase();
+}
 
 type StopDef = {
   id: StageId;
@@ -844,7 +855,12 @@ export function WindingCanvas({
                   {teamTokens.map((member) =>
                     member.role ? (
                       <div key={member.id} className={member.id === youId ? "z-10 scale-110" : "opacity-90"}>
-                        <RolePortrait role={member.role} size={member.id === youId ? 32 : 26} />
+                        <RolePortrait
+                          role={member.role}
+                          size={member.id === youId ? 34 : 28}
+                          initials={initialsFor(member.name)}
+                          title={`${member.name} · ${ROLES[member.role].name}`}
+                        />
                       </div>
                     ) : null,
                   )}
@@ -1146,7 +1162,12 @@ function StopArtifactPreview({ stopId, state }: { stopId: StageId; state: RoomSt
           {students.map((s) =>
             s.role ? (
               <div key={s.id} className={s.claimed ? "opacity-100" : "opacity-35"}>
-                <RolePortrait role={s.role} size={26} />
+                <RolePortrait
+                  role={s.role}
+                  size={28}
+                  initials={initialsFor(s.name)}
+                  title={`${s.name} · ${ROLES[s.role].name}`}
+                />
               </div>
             ) : null,
           )}

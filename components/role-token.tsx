@@ -1,48 +1,54 @@
+"use client";
+
+import { useId } from "react";
 import type { RoleId } from "@/lib/domain";
 import { ROLES } from "@/lib/domain";
 
-const PORTRAIT_TINT: Record<RoleId | "teacher", { bg: string; ring: string; skin: string; hair: string; coat: string }> = {
+const EXPLORER_PALETTE: Record<
+  RoleId | "teacher",
+  { bg: string; ring: string; hood: string; suit: string; trim: string }
+> = {
   leader: {
     bg: "#E8EEFC",
     ring: "#2F62E0",
-    skin: "#A86B43",
-    hair: "#1E2235",
-    coat: "#2F62E0",
+    hood: "#2F62E0",
+    suit: "#234CB5",
+    trim: "#F6C453",
   },
   interviewer: {
     bg: "#E3F4EE",
     ring: "#0E948C",
-    skin: "#F0C3A4",
-    hair: "#3D2B24",
-    coat: "#0E948C",
+    hood: "#0E948C",
+    suit: "#0A706A",
+    trim: "#A9E3D2",
   },
   mapper: {
     bg: "#FDF3DC",
     ring: "#E0941A",
-    skin: "#F4CEAE",
-    hair: "#1F2430",
-    coat: "#C97D0C",
+    hood: "#E0941A",
+    suit: "#B8740B",
+    trim: "#FFE3A3",
   },
   insight: {
     bg: "#F3EEFE",
     ring: "#7A45D6",
-    skin: "#D99B72",
-    hair: "#2A2438",
-    coat: "#7A45D6",
+    hood: "#7A45D6",
+    suit: "#5D2FB0",
+    trim: "#DFCFFE",
   },
   devil: {
     bg: "#FDECEB",
     ring: "#E25B4A",
-    skin: "#E8B494",
-    hair: "#27232A",
-    coat: "#C94435",
+    hood: "#E25B4A",
+    suit: "#BA3E30",
+    trim: "#FFD2CC",
   },
   teacher: {
     bg: "#FBF0CF",
     ring: "#B8860B",
-    skin: "#E7B996",
-    hair: "#2C3548",
-    coat: "#1E2A44",
+    hood: "#1E2A44",
+    suit: "#151F33",
+    trim: "#F2C14E",
   },
 };
 
@@ -50,13 +56,19 @@ export function RolePortrait({
   role,
   size = 48,
   className = "",
+  initials,
+  title,
 }: {
   role: RoleId;
   size?: number;
   className?: string;
+  initials?: string;
+  title?: string;
 }) {
-  const palette = PORTRAIT_TINT[role];
-  const label = ROLES[role].name;
+  const uid = useId();
+  const clipId = `explorer-clip-${role}-${uid}`;
+  const palette = EXPLORER_PALETTE[role];
+  const label = title ?? ROLES[role].name;
 
   return (
     <svg
@@ -67,8 +79,9 @@ export function RolePortrait({
       aria-label={label}
       className={className}
     >
+      <title>{label}</title>
       <defs>
-        <clipPath id={`clip-${role}-${size}`}>
+        <clipPath id={clipId}>
           <circle cx="40" cy="40" r="36" />
         </clipPath>
       </defs>
@@ -76,125 +89,152 @@ export function RolePortrait({
       {/* Soft tinted medallion backdrop */}
       <circle cx="40" cy="40" r="37" fill={palette.bg} stroke={palette.ring} strokeWidth="2.5" />
 
-      <g clipPath={`url(#clip-${role}-${size})`}>
-        {/* Subtle geometric backdrop motif */}
-        <circle cx="56" cy="22" r="14" fill={palette.ring} opacity="0.1" />
+      <g clipPath={`url(#${clipId})`}>
+        {/* Subtle geometric backdrop glow */}
+        <circle cx="57" cy="21" r="15" fill={palette.ring} opacity="0.12" />
 
-        {role === "leader" && (
+        {/* Shoulders & Explorer Parka */}
+        <path d="M16 80c2-15 11-22 24-22s22 7 24 22Z" fill={palette.suit} />
+        <path
+          d="M29 59c3.5 4.5 18.5 4.5 22 0"
+          fill="none"
+          stroke={palette.trim}
+          strokeWidth="3"
+          strokeLinecap="round"
+        />
+
+        {/* Role-specific headgear behind/around the hood */}
+        {role === "devil" && (
           <>
-            {/* Shoulders & crisp collar */}
-            <path d="M16 80c2-17 11-24 24-24s22 7 24 24Z" fill={palette.coat} />
-            <path d="M33 56l7 8 7-8" fill="#FFFFFF" opacity="0.9" />
-            {/* Hair back + neck */}
-            <circle cx="40" cy="31" r="17" fill={palette.hair} />
-            <rect x="35" y="45" width="10" height="12" rx="5" fill={palette.skin} />
-            {/* Face */}
-            <circle cx="40" cy="35" r="13" fill={palette.skin} />
-            {/* Curly top & warm headband */}
-            <circle cx="30" cy="25" r="6" fill={palette.hair} />
-            <circle cx="40" cy="21" r="6.5" fill={palette.hair} />
-            <circle cx="50" cy="25" r="6" fill={palette.hair} />
-            <path d="M28 28c6-4 18-4 24 0" fill="none" stroke="#F6C453" strokeWidth="2.5" strokeLinecap="round" />
-            {/* Calm eyes & smile */}
-            <circle cx="35.5" cy="35.5" r="1.5" fill="#1E2235" />
-            <circle cx="44.5" cy="35.5" r="1.5" fill="#1E2235" />
-            <path d="M36 41c2.2 2 5.8 2 8 0" fill="none" stroke="#6E3B20" strokeWidth="1.8" strokeLinecap="round" />
-            {/* Compass / leadership pin */}
-            <circle cx="57" cy="60" r="8" fill="#FFFFFF" stroke={palette.ring} strokeWidth="2" />
-            <polygon points="57,54 59.5,60 57,66 54.5,60" fill={palette.ring} />
+            {/* Playful twin hood peaks */}
+            <path d="M24 30l-3-11 10 5Z" fill={palette.hood} />
+            <path d="M56 30l3-11-10 5Z" fill={palette.hood} />
           </>
         )}
 
         {role === "interviewer" && (
           <>
-            {/* Jacket & scarf */}
-            <path d="M15 80c2-16 11-23 25-23s23 7 25 23Z" fill={palette.coat} />
-            <path d="M31 57c3 5 15 5 18 0" fill="none" stroke="#A9E3D2" strokeWidth="4" strokeLinecap="round" />
-            <rect x="35" y="45" width="10" height="12" rx="5" fill={palette.skin} />
-            {/* Head & textured short hair */}
-            <circle cx="40" cy="35" r="13" fill={palette.skin} />
-            <path d="M27 33c0-10 6-16 13-16s13 6 13 15c-3-4-7-6-13-6s-10 2-13 7Z" fill={palette.hair} />
-            {/* Expressive round glasses */}
-            <circle cx="35" cy="36" r="4.2" fill="none" stroke="#1E2A44" strokeWidth="1.7" />
-            <circle cx="45" cy="36" r="4.2" fill="none" stroke="#1E2A44" strokeWidth="1.7" />
-            <path d="M39.2 36h1.6" stroke="#1E2A44" strokeWidth="1.7" />
-            <circle cx="35" cy="36" r="1.3" fill="#1E2A44" />
-            <circle cx="45" cy="36" r="1.3" fill="#1E2A44" />
-            <path d="M36.5 42c2 1.6 5 1.6 7 0" fill="none" stroke="#7A4630" strokeWidth="1.7" strokeLinecap="round" />
-            {/* Studio mic + sound wave */}
-            <rect x="55" y="51" width="7" height="12" rx="3.5" fill="#1E2A44" stroke="#FFFFFF" strokeWidth="1.5" />
-            <path d="M58.5 63v6M52 57a6.5 6.5 0 0 0 13 0" fill="none" stroke="#1E2A44" strokeWidth="1.6" strokeLinecap="round" />
+            {/* Oversized studio headphone band */}
+            <path
+              d="M20 38c0-13 9-22 20-22s20 9 20 22"
+              fill="none"
+              stroke="#1E2A44"
+              strokeWidth="4.2"
+              strokeLinecap="round"
+            />
+          </>
+        )}
+
+        {/* Explorer Hood */}
+        <circle cx="40" cy="37" r="19" fill={palette.hood} />
+        {/* Hood inner trim ring */}
+        <rect x="23" y="23.5" width="34" height="25" rx="12.5" fill={palette.trim} opacity="0.92" />
+        {/* Dark Cartoon Visor Faceplate */}
+        <rect x="25" y="25.5" width="30" height="21" rx="10.5" fill="#1E2A44" />
+
+        {/* Role-specific crests, goggles, lenses & expressions */}
+        {role === "leader" && (
+          <>
+            {/* Navigator golden star crest on hood */}
+            <circle cx="40" cy="18.5" r="6" fill="#FFFFFF" stroke={palette.ring} strokeWidth="1.8" />
+            <polygon points="40,14 41.6,17.4 45,18.5 41.6,19.6 40,23 38.4,19.6 35,18.5 38.4,17.4" fill="#F6C453" />
+            {/* Bright confident cartoon eyes */}
+            <circle cx="34" cy="35" r="2.8" fill="#FFFFFF" />
+            <circle cx="46" cy="35" r="2.8" fill="#FFFFFF" />
+            <circle cx="34.7" cy="34.4" r="1" fill="#A9E3D2" />
+            <circle cx="46.7" cy="34.4" r="1" fill="#A9E3D2" />
+            <path d="M35.5 40.5c2.2 2 6.8 2 9 0" fill="none" stroke="#F6C453" strokeWidth="2" strokeLinecap="round" />
+            {/* Compass badge */}
+            <circle cx="58" cy="60" r="8.5" fill="#FFFFFF" stroke={palette.ring} strokeWidth="1.8" />
+            <polygon points="58,54 60.5,60 58,66 55.5,60" fill={palette.ring} />
+          </>
+        )}
+
+        {role === "interviewer" && (
+          <>
+            {/* Headphone ear cups */}
+            <rect x="17" y="29" width="6.5" height="14" rx="3.2" fill="#1E2A44" stroke={palette.trim} strokeWidth="1.4" />
+            <rect x="56.5" y="29" width="6.5" height="14" rx="3.2" fill="#1E2A44" stroke={palette.trim} strokeWidth="1.4" />
+            {/* Warm happy listening eyes */}
+            <path d="M30.5 35.5q3.5-4 7 0" fill="none" stroke="#FFFFFF" strokeWidth="2.4" strokeLinecap="round" />
+            <path d="M42.5 35.5q3.5-4 7 0" fill="none" stroke="#FFFFFF" strokeWidth="2.4" strokeLinecap="round" />
+            <path d="M36 40.5c2 1.8 6 1.8 8 0" fill="none" stroke="#A9E3D2" strokeWidth="2" strokeLinecap="round" />
+            {/* Studio mic prop */}
+            <circle cx="58" cy="60" r="8.5" fill="#FFFFFF" stroke={palette.ring} strokeWidth="1.8" />
+            <rect x="55.5" y="54" width="5" height="8" rx="2.5" fill={palette.ring} />
+            <path d="M53.8 59a4.2 4.2 0 0 0 8.4 0M58 63.2v2.4" fill="none" stroke="#1E2A44" strokeWidth="1.5" strokeLinecap="round" />
           </>
         )}
 
         {role === "mapper" && (
           <>
-            {/* Cardigan */}
-            <path d="M16 80c2-16 11-23 24-23s22 7 24 23Z" fill={palette.coat} />
-            <path d="M34 57l6 10 6-10" fill="#FFF8EB" />
-            {/* Sleek bob hair */}
-            <path d="M23 36c0-13 7-20 17-20s17 7 17 20v13H23V36Z" fill={palette.hair} />
-            <rect x="35" y="45" width="10" height="12" rx="5" fill={palette.skin} />
-            <circle cx="40" cy="35" r="12.5" fill={palette.skin} />
-            {/* Clean fringe */}
-            <path d="M27.5 31c4-5 10-7 16.5-5 4 1.2 6.5 3 8.5 5-4-4-9-7-15-7-5 0-8 3-10 7Z" fill={palette.hair} />
-            <circle cx="35.5" cy="36" r="1.4" fill="#1F2430" />
-            <circle cx="44.5" cy="36" r="1.4" fill="#1F2430" />
-            <path d="M36.5 41.5c2 1.6 5 1.6 7 0" fill="none" stroke="#8C5132" strokeWidth="1.7" strokeLinecap="round" />
-            {/* Connected pattern nodes */}
-            <circle cx="57" cy="59" r="9" fill="#FFFFFF" stroke={palette.ring} strokeWidth="1.8" />
-            <path d="M53.5 57l6.5-1.5-2.5 6.5Z" fill="none" stroke={palette.coat} strokeWidth="1.5" strokeLinejoin="round" />
-            <circle cx="53.5" cy="57" r="1.8" fill={palette.coat} />
-            <circle cx="60" cy="55.5" r="1.8" fill={palette.coat} />
-            <circle cx="57.5" cy="62" r="1.8" fill={palette.coat} />
+            {/* Explorer goggles pushed up onto brow */}
+            <rect x="27" y="15.5" width="11.5" height="8" rx="4" fill="#FFFFFF" stroke="#1E2A44" strokeWidth="1.8" />
+            <rect x="41.5" y="15.5" width="11.5" height="8" rx="4" fill="#FFFFFF" stroke="#1E2A44" strokeWidth="1.8" />
+            <path d="M38.5 19.5h3" stroke="#1E2A44" strokeWidth="1.8" />
+            <circle cx="31.5" cy="19" r="1.4" fill="#A9E3D2" />
+            <circle cx="46" cy="19" r="1.4" fill="#A9E3D2" />
+            {/* Curious wide eyes */}
+            <circle cx="34" cy="35" r="2.8" fill="#FFFFFF" />
+            <circle cx="46" cy="35" r="2.8" fill="#FFFFFF" />
+            <path d="M36 40.5c2.2 1.8 5.8 1.8 8 0" fill="none" stroke="#FFE3A3" strokeWidth="2" strokeLinecap="round" />
+            {/* Connected pattern nodes badge */}
+            <circle cx="58" cy="60" r="8.5" fill="#FFFFFF" stroke={palette.ring} strokeWidth="1.8" />
+            <path d="M54.5 58l6.5-1.5-2.5 6.5Z" fill="none" stroke={palette.suit} strokeWidth="1.5" strokeLinejoin="round" />
+            <circle cx="54.5" cy="58" r="1.7" fill={palette.suit} />
+            <circle cx="61" cy="56.5" r="1.7" fill={palette.suit} />
+            <circle cx="58.5" cy="63" r="1.7" fill={palette.suit} />
           </>
         )}
 
         {role === "insight" && (
           <>
-            {/* Sweater */}
-            <path d="M16 80c2-16 11-23 24-23s22 7 24 23Z" fill={palette.coat} />
-            <path d="M33 58c3 4 11 4 14 0" fill="none" stroke="#E9DFFE" strokeWidth="2.5" strokeLinecap="round" />
-            <rect x="35" y="45" width="10" height="12" rx="5" fill={palette.skin} />
-            <circle cx="40" cy="35" r="13" fill={palette.skin} />
-            {/* Wavy swept hair */}
-            <path d="M26 35c-1-11 6-18 15-18 8 0 13 6 12 15-4-5-9-6-15-5-5 1-9 4-12 8Z" fill={palette.hair} />
-            {/* Rectangular analytical glasses */}
-            <rect x="30.5" y="33" width="8" height="6" rx="2" fill="none" stroke="#1E2235" strokeWidth="1.6" />
-            <rect x="41.5" y="33" width="8" height="6" rx="2" fill="none" stroke="#1E2235" strokeWidth="1.6" />
-            <path d="M38.5 35.5h3" stroke="#1E2235" strokeWidth="1.6" />
-            <circle cx="34.5" cy="36" r="1.3" fill="#1E2235" />
-            <circle cx="45.5" cy="36" r="1.3" fill="#1E2235" />
-            <path d="M36.5 42c2 1.4 5 1.4 7 0" fill="none" stroke="#7A4528" strokeWidth="1.7" strokeLinecap="round" />
-            {/* Glowing lightbulb / diamond spark */}
-            <circle cx="57.5" cy="59" r="9" fill="#FFFFFF" stroke={palette.ring} strokeWidth="1.8" />
-            <polygon points="57.5,52.5 62.5,59 57.5,65.5 52.5,59" fill={palette.ring} />
-            <circle cx="57.5" cy="59" r="2" fill="#FFFFFF" />
+            {/* Left eye curious + Right eye behind glowing magnifier lens */}
+            <circle cx="33" cy="35.5" r="2.4" fill="#FFFFFF" />
+            <circle cx="46" cy="35" r="6.8" fill="#322359" stroke="#F6C453" strokeWidth="2" />
+            <circle cx="46" cy="35" r="3.4" fill="#FFFFFF" />
+            <circle cx="47.5" cy="33.5" r="1.1" fill="#DFCFFE" />
+            <path d="M30.5 30.5l5-1.2" stroke="#DFCFFE" strokeWidth="1.6" strokeLinecap="round" />
+            <path d="M36 41c2 1.3 5 1.3 7.5-.2" fill="none" stroke="#DFCFFE" strokeWidth="1.9" strokeLinecap="round" />
+            {/* Diamond spark badge */}
+            <circle cx="58" cy="60" r="8.5" fill="#FFFFFF" stroke={palette.ring} strokeWidth="1.8" />
+            <polygon points="58,53.5 62.5,60 58,66.5 53.5,60" fill={palette.ring} />
+            <circle cx="58" cy="60" r="1.8" fill="#FFFFFF" />
           </>
         )}
 
         {role === "devil" && (
           <>
-            {/* Structured jacket */}
-            <path d="M16 80c2-16 11-23 24-23s22 7 24 23Z" fill={palette.coat} />
-            <path d="M32 57l8 9 8-9" fill="#FFFFFF" opacity="0.92" />
-            {/* Voluminous dark hair */}
-            <path d="M23 40c0-15 7-23 17-23s17 8 17 23v8H23v-8Z" fill={palette.hair} />
-            <rect x="35" y="45" width="10" height="12" rx="5" fill={palette.skin} />
-            <circle cx="40" cy="35" r="12.5" fill={palette.skin} />
-            {/* Side-swept brow hair & observant expression */}
-            <path d="M27.5 32c5-6 13-7 25-2-2-6-7-9-13-9-6 0-10 4-12 11Z" fill={palette.hair} />
-            <path d="M32.5 32l5-1" stroke={palette.hair} strokeWidth="1.5" strokeLinecap="round" />
-            <path d="M42.5 31.5l5 .5" stroke={palette.hair} strokeWidth="1.5" strokeLinecap="round" />
-            <circle cx="35.5" cy="36" r="1.4" fill="#27232A" />
-            <circle cx="44.5" cy="36" r="1.4" fill="#27232A" />
-            <path d="M37 42c2 1 4.5.8 6.5-.3" fill="none" stroke="#854B34" strokeWidth="1.7" strokeLinecap="round" />
-            {/* Challenge triangle shield */}
-            <circle cx="57.5" cy="59" r="9" fill="#FFFFFF" stroke={palette.ring} strokeWidth="1.8" />
-            <polygon points="57.5,53 63,63 52,63" fill={palette.ring} />
-            <rect x="56.8" y="56" width="1.4" height="4" rx="0.7" fill="#FFFFFF" />
-            <circle cx="57.5" cy="61.5" r="0.8" fill="#FFFFFF" />
+            {/* Cheeky raised-eyebrow challenger eyes */}
+            <path d="M30 31.5l6.5-1.2" stroke="#FFD2CC" strokeWidth="1.8" strokeLinecap="round" />
+            <path d="M42.5 29.5q3.5-3 7-.5" fill="none" stroke="#FFD2CC" strokeWidth="1.8" strokeLinecap="round" />
+            <circle cx="34" cy="35.5" r="2.6" fill="#FFFFFF" />
+            <circle cx="46" cy="35.5" r="2.8" fill="#FFFFFF" />
+            <path d="M35.5 41.2c2.5 1 5.5.4 8-1.4" fill="none" stroke="#FFD2CC" strokeWidth="2" strokeLinecap="round" />
+            {/* Challenge shield triangle badge */}
+            <circle cx="58" cy="60" r="8.5" fill="#FFFFFF" stroke={palette.ring} strokeWidth="1.8" />
+            <polygon points="58,54 63.5,64 52.5,64" fill={palette.ring} />
+            <rect x="57.3" y="57" width="1.4" height="3.8" rx="0.7" fill="#FFFFFF" />
+            <circle cx="58" cy="62.4" r="0.8" fill="#FFFFFF" />
           </>
+        )}
+
+        {/* Optional student initials tag for multi-team classrooms */}
+        {initials && (
+          <g>
+            <circle cx="21" cy="60" r="9.5" fill="#FFFFFF" stroke={palette.ring} strokeWidth="1.8" />
+            <text
+              x="21"
+              y="63.5"
+              textAnchor="middle"
+              fontSize="9"
+              fontWeight="700"
+              fill="#1E2A44"
+              fontFamily="system-ui, sans-serif"
+            >
+              {initials.slice(0, 2).toUpperCase()}
+            </text>
+          </g>
         )}
       </g>
     </svg>
@@ -208,7 +248,10 @@ export function TeacherPortrait({
   size?: number;
   className?: string;
 }) {
-  const palette = PORTRAIT_TINT.teacher;
+  const uid = useId();
+  const clipId = `explorer-clip-teacher-${uid}`;
+  const palette = EXPLORER_PALETTE.teacher;
+
   return (
     <svg
       width={size}
@@ -218,24 +261,41 @@ export function TeacherPortrait({
       aria-label="Teacher"
       className={className}
     >
+      <title>Teacher</title>
       <defs>
-        <clipPath id={`clip-teacher-${size}`}>
+        <clipPath id={clipId}>
           <circle cx="40" cy="40" r="36" />
         </clipPath>
       </defs>
+
       <circle cx="40" cy="40" r="37" fill={palette.bg} stroke={palette.ring} strokeWidth="2.5" />
-      <g clipPath={`url(#clip-teacher-${size})`}>
-        <circle cx="24" cy="22" r="12" fill={palette.ring} opacity="0.14" />
-        <path d="M16 80c2-16 11-23 24-23s22 7 24 23Z" fill={palette.coat} />
-        <path d="M33 57l7 9 7-9" fill="#FFFFFF" opacity="0.92" />
-        <rect x="35" y="45" width="10" height="12" rx="5" fill={palette.skin} />
-        <circle cx="40" cy="35" r="13" fill={palette.skin} />
-        <path d="M27 33c0-10 6-16 13-16s13 6 13 15c-4-4-8-5-13-5s-9 2-13 6Z" fill={palette.hair} />
-        <circle cx="35.5" cy="35.5" r="1.4" fill="#1E2A44" />
-        <circle cx="44.5" cy="35.5" r="1.4" fill="#1E2A44" />
-        <path d="M36 41c2.2 1.8 5.8 1.8 8 0" fill="none" stroke="#7A4C2E" strokeWidth="1.8" strokeLinecap="round" />
-        <circle cx="57" cy="59" r="8.5" fill="#FFFFFF" stroke={palette.ring} strokeWidth="1.8" />
-        <path d="M53.5 59.5l2.3 2.3 4.8-5.2" fill="none" stroke={palette.ring} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+
+      <g clipPath={`url(#${clipId})`}>
+        <circle cx="24" cy="22" r="13" fill={palette.ring} opacity="0.14" />
+        {/* Navy guide coat + gold collar */}
+        <path d="M16 80c2-15 11-22 24-22s22 7 24 22Z" fill={palette.suit} />
+        <path d="M30 59c3.5 4.5 16.5 4.5 20 0" fill="none" stroke={palette.trim} strokeWidth="3" strokeLinecap="round" />
+
+        {/* Guide cowl & visor */}
+        <circle cx="40" cy="37" r="19" fill={palette.hood} />
+        <rect x="23" y="23.5" width="34" height="25" rx="12.5" fill={palette.trim} opacity="0.95" />
+        <rect x="25" y="25.5" width="30" height="21" rx="10.5" fill="#1E2A44" />
+
+        {/* Warm calm eyes + smile */}
+        <circle cx="34" cy="35" r="2.6" fill="#FFFFFF" />
+        <circle cx="46" cy="35" r="2.6" fill="#FFFFFF" />
+        <path d="M35.5 40.5c2.5 2 6.5 2 9 0" fill="none" stroke="#F2C14E" strokeWidth="2" strokeLinecap="round" />
+
+        {/* Gold checkmark guide badge */}
+        <circle cx="58" cy="60" r="8.5" fill="#FFFFFF" stroke={palette.ring} strokeWidth="1.8" />
+        <path
+          d="M54.5 60.5l2.3 2.3 4.8-5.2"
+          fill="none"
+          stroke={palette.ring}
+          strokeWidth="2.1"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
       </g>
     </svg>
   );
