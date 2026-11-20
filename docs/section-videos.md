@@ -163,7 +163,7 @@ In the football example, the team follows the student who brought the ball. The 
 
 You have a person. You do not yet have a moment. A stakeholder interview is how you stop guessing about their day. You ask what they are trying to get done, what gets in the way, and when and where it happened. You are listening for a fact, not for their advice on a solution.
 
-The room already holds a short version of that interview, so the team can move in one lesson. It is the team asking, and that person answering. It is built from the map. It is not a recording of a real farmer or a real student. If the map says the person is a guess, the interview says so.
+The room already holds a short version of that interview, so the team can move in one lesson. It is the team asking, and that person answering. The person speaks as someone who does this work. They use real seasons, prices, and what actually went wrong. It is not a recording of one visit.
 
 Show the football interview in four beats:
 
@@ -180,7 +180,7 @@ The Lead Interviewer usually writes the first incident. Others may add a differe
 
 ### Read this step
 
-The person you picked is on the board. The short interview is a faster version of a longer conversation with them. The team asks. They answer. Read what they are trying to get done, what gets in the way, and one moment with a when and a where.
+The person you picked is on the board. The short interview is a faster version of a longer conversation. The team asks. That person answers as someone who does the work, with real seasons, prices, and what went wrong. Read what they are trying to get done, what gets in the way, and one moment with a when and a where.
 
 Only the Lead Interviewer types extra questions. Everyone else watches the answers appear. Eight questions is the limit. Ask about their day. Do not ask them to choose your solution.
 
