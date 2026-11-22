@@ -36,7 +36,7 @@ The first brief was the start, not the finished rule. These corrections came fro
 | The phase over the statement was “Test ideas”. | That phase is **Define**. | This room writes the problem. It does not test solutions. |
 | Causes sat in a tray, and Whys stacked in a column. | The incident is the fish head. Ribs leave the spine. Each Why is the next card to the left. | Students could not see where a card had gone. |
 | A pin was a marker with no owner. | The Insight Extractor writes Obstacle and Insight. The Theme Mapper places the pin on the fish. | Two jobs were hidden in one button. |
-| The sample story was school lunch waste. | The sample story is cocoa farmers: the work, the safety, and about 6 cents of each dollar. The teaching example inside the films is a missing football, so the class does not copy it onto the cocoa board. | The lesson has to be wide enough to explore, the way a sweatshop lesson can be about pay, safety, and hours, not one narrow fact. |
+| The sample story was school lunch waste. | The sample story is cocoa farmers: the work, the safety, and about 6 cents of each dollar. The teaching example inside the films is a morning bus that fills at the first stop, so the class does not copy it onto their own board. | The lesson has to be wide enough to explore, the way a sweatshop lesson can be about pay, safety, and hours, not one narrow fact. |
 
 ## The reusable shape of a chunk
 
@@ -137,7 +137,7 @@ When the screens are right, ask for the films and the field guide. Do not ask fo
 
 ## What not to copy from C60
 
-Do not copy the cocoa farmers, the 6 cents, the football example, or the five-blank sentence unless that chunk really uses them. Do not copy stages that the new script does not have. Do not add a vote, a chat box, or a fish because C60 has one.
+Do not copy the cocoa farmers, the 6 cents, the full-bus example, or the five-blank sentence unless that chunk really uses them. Do not copy stages that the new script does not have. Do not add a vote, a chat box, or a fish because C60 has one.
 
 Do copy the shell: one room, five roles, teacher Next, Your move, a shared board, films with collapsed read-throughs, a filled example, and a screen guide written after the rules settle.
 

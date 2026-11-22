@@ -4,7 +4,7 @@ What each screen asks the team to fill in is in [screens.md](screens.md). This f
 
 
 
-Five short films for one team in What's the problem. The first film sets the cocoa scene. The next four teach the idea, then show the clicks for the step that is about to open. Those four use a different story, a missing football at break, so the team does not copy the cocoa answers into the board.
+Five short films for one team in What's the problem. The first film sets the cocoa scene. The next four teach the idea, then show the clicks for the step that is about to open. Those four use a different story, a morning bus that fills at the first stop, so the team does not copy those answers onto their own board. The same fields work on any problem.
 
 The films are not recorded yet. The room already has the player, the teacher controls, and the read-through. A dark frame that says “Video will play here” stands in for the file.
 
@@ -54,23 +54,23 @@ Say the jobs, not the sample names. The sample room uses Alex, Leo, Maya, Asha, 
 
 The teacher moves the screens and runs the clock. Students do not press Next.
 
-## The football, used in films 2 to 5
+## The full bus, used in films 2 to 5
 
-One toy story, so the four tool films feel like one lesson.
+One practice story, so the four tool films feel like one lesson. The words are only a shape. Any project fills the same fields.
 
-A student brings a football for break. On Thursday the whistle goes and the ball is still in the shed. The game never starts.
+One morning bus fills at the first stop, by the shops. Students at the later stop, on the hill, are left on the pavement with no place to stand. On Monday at 7:40 a student who was there on time could not get on, and missed the start of registration.
 
-People worth naming: the student who brought the ball, the year group waiting to play, the duty teacher, the coach, and the caretaker who locks the shed.
+People worth naming: the student at the hill stop, the year group, the bus driver, the form tutor, and the transport manager who runs the buses.
 
-The team follows the student who brought the ball.
+The team follows the student at the hill stop.
 
-One incident: "On Thursday at outdoor break, the ball was still in the shed when the whistle went, and the game never started."
+One incident: "On Monday at 7:40, the bus reached the hill stop already full, and the student was left on the pavement and missed the start of registration."
 
-One cause, on the Tools rib: "There is one key, and it leaves with the caretaker."
+One cause, on the Tools rib: "There is one bus, and it fills at the first stop."
 
-The root Why, often the third answer rather than a forced fifth: "The lock-up round is scheduled before break, so the key is off the site when the game should start."
+The root Why, often the third answer rather than a forced fifth: "The bus is sent out before anyone counts who is waiting further along the route, so the first stop takes every place."
 
-One statement: "The student who brought the ball needs to get a game going before break ends, but there is one key and it leaves with the caretaker, so on Thursday the ball was still in the shed when the whistle went, because the lock-up round is scheduled before break."
+One statement: "The student at the hill stop needs to reach school in time for registration, but there is one bus and it fills at the first stop, so on Monday at 7:40 the student was left on the pavement, because the bus is sent out before anyone counts who is waiting further along the route."
 
 ---
 
@@ -114,18 +114,18 @@ In this room you find the problem. You do not design a solution. You will name w
 
 ### What to say
 
-A stakeholder is a person or a group the situation touches. Name a kind of person, such as "caretaker" or "year group". Do not name a product, an app, or a solution.
+A stakeholder is a person or a group the situation touches. Name a kind of person, such as "bus driver" or "year group". Do not name a product, an app, or a solution.
 
-Show the football, not the farm. Five cards go on the table: the student who brought the ball, the year group, the duty teacher, the coach, the caretaker. Two cards that mean the same person get stacked. "The boy with the ball" and "the student who brought the football" are one person. The duty teacher and the coach are not the same person, even if both are adults. The Theme Mapper merges. Everyone else can point at a pair. The Devil's Advocate can stop a merge that glues two different people together.
+Show the full bus, not the class problem. Five cards go on the table: the student at the hill stop, the year group, the bus driver, the form tutor, the transport manager. Two cards that mean the same person get stacked. "The girl at the hill stop" and "the student left on the pavement" are one person. The bus driver and the transport manager are not the same person, even if both are adults. The Theme Mapper merges. Everyone else can point at a pair. The Devil's Advocate can stop a merge that glues two different people together.
 
 Then the matrix. Power is how much they can change what happens. Interest is how much they care. Place each card:
 
 |  | Low interest | High interest |
 | --- | --- | --- |
-| High power | Keep satisfied. The caretaker has the key and may not care about the game. | Work closely. The coach wants the game and can change the routine. |
-| Low power | Monitor. | Keep involved. The student who brought the ball cares a lot and cannot open the shed. |
+| High power | Keep satisfied. The transport manager runs the buses and may not care about one student at one stop. | Work closely. The form tutor wants the student in registration and can change the morning routine. |
+| Low power | Monitor. | Keep involved. The student at the hill stop cares a lot and cannot add a second bus. |
 
-The Lead Interviewer taps one person to follow and writes what goes wrong for them. In the film, that person is the student who brought the ball, and what goes wrong is that break starts and there is no ball. Say clearly that this sentence is an early guess. The checked moment comes in the next film. There is no class vote on this choice.
+The Lead Interviewer taps one person to follow and writes what goes wrong for them. In the film, that person is the student at the hill stop, and what goes wrong is that the morning bus arrives full and there is no place to stand. Say clearly that this sentence is an early guess. The checked moment comes in the next film. There is no class vote on this choice.
 
 Point at the jobs in the app, in order:
 
@@ -147,7 +147,7 @@ Then the teacher presses Next and the incident screen opens. Do not press it ins
 
 The Lead Interviewer taps the one person the team will follow and writes what goes wrong for that person. That sentence is the early guess. There is no vote. The Insight Extractor can mark daily pain. The Devil's Advocate looks for a missing blocker and for guesses that are being treated as facts.
 
-In the football example, the team follows the student who brought the ball. The caretaker has the key and may not care about the game. The student cares and cannot open the shed.
+In the full-bus example, the team follows the student at the hill stop. The transport manager runs the buses and may not care about one student at one stop. The student cares and cannot add a second bus. Use the same fields on your own problem.
 
 ---
 
@@ -165,16 +165,16 @@ You have a person. You do not yet have a moment. A stakeholder interview is how 
 
 The room already holds a short version of that interview, so the team can move in one lesson. It is the team asking, and that person answering. The person speaks as someone who does this work. They use real seasons, prices, and what actually went wrong. It is not a recording of one visit.
 
-Show the football interview in four beats:
+Show the full-bus interview in four beats:
 
-- What are you trying to get done? "I am trying to get a game going before break ends."
-- What gets in the way? "The ball is locked in the shed."
-- One moment. "On Thursday, at outdoor break, the whistle went and the ball was still inside."
-- What do you wish people understood? "I brought the ball. I still could not start the game."
+- What are you trying to get done? "I am trying to reach school in time for registration."
+- What gets in the way? "There is one bus, and it fills at the first stop."
+- One moment. "On Monday at 7:40 the bus reached the hill stop already full, and I was left on the pavement."
+- What do you wish people understood? "I was at the stop on time. I still could not get on."
 
 Then the tool. The short interview appears for everyone. Under it, only the Lead Interviewer has a box. That person may ask up to eight more questions. Everyone else reads the questions and the answers as they arrive. They do not each open their own chat. Extra questions stay on the person's day. If someone asks "what app should we build?", the persona refuses to pick a solution.
 
-After the team has a moment, they write it as an incident. The shape is when, where, and what happened. "On Thursday at outdoor break, the ball was still in the shed when the whistle went, and the game never started." That is a fact. "People are careless with equipment" is blame, and the Devil's Advocate can send it back.
+After the team has a moment, they write it as an incident. The shape is when, where, and what happened. "On Monday at 7:40, the bus reached the hill stop already full, and the student was left on the pavement and missed the start of registration." That is a fact. "Students get to the stop too late" is blame, and the Devil's Advocate can send it back.
 
 The Lead Interviewer usually writes the first incident. Others may add a different moment. The team votes. The Leader locks the winner, or the teacher pressing Next locks the one with the most votes. The winner becomes the head of the fish. It is the core problem the team will explain. It is not a cause, and it is not a solution.
 
@@ -184,7 +184,7 @@ The person you picked is on the board. The short interview is a faster version o
 
 Only the Lead Interviewer types extra questions. Everyone else watches the answers appear. Eight questions is the limit. Ask about their day. Do not ask them to choose your solution.
 
-Then write one incident: a fact that happened, with a when, a where, and a what. "On Thursday at outdoor break, the ball was still in the shed when the whistle went" is an incident. "They are careless" is not. The Devil's Advocate can reject blame.
+Then write one incident: a fact that happened, with a when, a where, and a what. "On Monday at 7:40, the bus reached the hill stop already full, and the student was left on the pavement" is an incident. "They get to the stop too late" is not. The Devil's Advocate can reject blame.
 
 Vote for one incident. The winner is the core problem. It goes in the head of the fish on the next screen.
 
@@ -213,18 +213,18 @@ Six ribs, six angles:
 | Tools | What did people have to use? |
 | Environment | Where was it, and what was around it? |
 
-On the football fish the head reads: the ball was still in the shed when the whistle went. One cause lands on each rib. Timing: break is only fifteen minutes. Communication: nobody is told the shed will lock. Perceived value: a short game feels pointless. Process: the shed is locked on a round that finishes before break. Tools: there is one key, and it leaves with the caretaker. Environment: the shed is across the field.
+On the full-bus fish the head reads: the bus reached the hill stop already full, and the student was left on the pavement. One cause lands on each rib. Timing: the hill stop is eight minutes after the first, and the bus is already full. Communication: nobody tells the hill stop that the bus has no places left. Perceived value: waiting for a later bus feels pointless once registration has started. Process: places are taken in the order of the stops, and none are held for later stops. Tools: there is one bus, and it fills at the first stop. Environment: the first stop is by the shops, where most of the students get on.
 
 In the app, each person picks a rib, writes one cause of the incident, and adds it. The card appears on that rib. The Theme Mapper can move a card that landed on the wrong rib. The Devil's Advocate stamps a card that blames a person or says nothing you could check. Nobody picks the root yet.
 
-Next, the team reads the six ribs and taps **one** rib to follow. The football team taps Tools. The five Whys happen on that rib only.
+Next, the team reads the six ribs and taps **one** rib to follow. The full-bus team taps Tools. The five Whys happen on that rib only.
 
-The Insight Extractor asks Why, and the answer grows to the left. Why is there one key that leaves with the caretaker? Because every key is on one ring. Why does the ring leave? Because it goes on the lock-up round. Why is the key gone at break? Because the lock-up round is scheduled before break. Stop there. The third Why is the root. A fourth or a fifth is allowed, and so is stopping earlier, when the answer is the reason you trust. Tap that card and mark **This Why is the root cause**. Each Why is tagged Evidence, Assumption, or Need to check. The Lead Interviewer can name who to ask on a Need-to-check card. Other students may propose a Why. Only the Insight Extractor adds it to the rib.
+The Insight Extractor asks Why, and the answer grows to the left. Why does the one bus fill at the first stop? Because every place is open to whoever boards first. Why does the first stop take every place? Because that stop comes first, and more students wait there. Why is there no place left at the hill stop? Because the bus is sent out before anyone counts who is waiting further along the route. Stop there. The third Why is the root. A fourth or a fifth is allowed, and so is stopping earlier, when the answer is the reason you trust. Tap that card and mark **This Why is the root cause**. Each Why is tagged Evidence, Assumption, or Need to check. The Lead Interviewer can name who to ask on a Need-to-check card. Other students may propose a Why. Only the Insight Extractor adds it to the rib.
 
 The pin carries two labels into the statement, and they are not the same card:
 
-- Obstacle is the cause written on the rib. In the film: "There is one key, and it leaves with the caretaker."
-- Insight is the Why marked as the root. In the film: "The lock-up round is scheduled before break."
+- Obstacle is the cause written on the rib. In the film: "There is one bus, and it fills at the first stop."
+- Insight is the Why marked as the root. In the film: "The bus is sent out before anyone counts who is waiting further along the route."
 
 The first Why is an explanation of the cause. It does not replace the cause. The Insight Extractor checks those two labels. The Theme Mapper places the pin on the fish. One to three pins are allowed. The incident in the head is not one of these labels. It becomes Harm on the next screen.
 
@@ -238,7 +238,7 @@ The first Why is an explanation of the cause. It does not replace the cause. The
 
 **Pin.** The Insight Extractor checks two labels. Obstacle is the cause on the rib. Insight is the Why marked as the root. The Theme Mapper places the pin. The incident stays in the head. It is not the obstacle and it is not the insight.
 
-In the football example the rib is Tools. The obstacle is the single key that leaves with the caretaker. The root is that lock-up happens before break.
+In the full-bus example the rib is Tools. The obstacle is the one bus that fills at the first stop. The root is that the bus is sent out before anyone counts who is waiting further along the route. Use the same fields on your own problem.
 
 ---
 
@@ -256,17 +256,17 @@ The sentence has five blanks:
 
 **[who] needs [need], but [obstacle], so [harm], because [insight].**
 
-Say where each word comes from, using the football, then point at the same blanks on the cocoa board. The sources are the same. The words will be different.
+Say where each word comes from, using the full bus, then point at the same blanks on the class board. The sources are the same. The words will be different.
 
-| Blank | Comes from | Football |
+| Blank | Comes from | Full bus |
 | --- | --- | --- |
-| Who | The person the Lead Interviewer followed | The student who brought the ball |
-| Need | The interview answer to "what are you trying to get done?", edited by the student | to get a game going before break ends |
-| Obstacle | The cause on the rib that was pinned | there is one key, and it leaves with the caretaker |
-| Harm | The incident in the fish head | on Thursday the ball was still in the shed when the whistle went |
-| Insight | The Why marked as the root | the lock-up round is scheduled before break |
+| Who | The person the Lead Interviewer followed | The student at the hill stop |
+| Need | The interview answer to "what are you trying to get done?", edited by the student | to reach school in time for registration |
+| Obstacle | The cause on the rib that was pinned | there is one bus, and it fills at the first stop |
+| Harm | The incident in the fish head | on Monday at 7:40 the student was left on the pavement |
+| Insight | The Why marked as the root | the bus is sent out before anyone counts who is waiting further along the route |
 
-Need is the only blank the student shapes. It is a human need. "An app that unlocks the shed" is a solution, and the board will not accept it. The other blanks arrive filled in. Edit one if it is wrong. An edit is kept. It is not overwritten when the map changes.
+Need is the only blank the student shapes. It is a human need. "An app that shows which bus has a place" is a solution, and the board will not accept it. The other blanks arrive filled in. Edit one if it is wrong. An edit is kept. It is not overwritten when the map changes.
 
 Each person writes their own sentence and submits it. The room waits until all five are in. Writing is silent.
 
@@ -282,9 +282,9 @@ Who is the person you followed. Need starts from the interview line about what t
 
 **Choose 3.** The Devil's Advocate tags weak sentences. The Insight Extractor can propose a fix. You accept a fix only on your own card. The Theme Mapper stacks duplicates. When the Leader opens the vote, you have two votes. The team keeps three sentences.
 
-The football sentence, so you can see the shape: "The student who brought the ball needs to get a game going before break ends, but there is one key and it leaves with the caretaker, so on Thursday the ball was still in the shed when the whistle went, because the lock-up round is scheduled before break."
+The full-bus sentence, so you can see the shape: "The student at the hill stop needs to reach school in time for registration, but there is one bus and it fills at the first stop, so on Monday at 7:40 the student was left on the pavement, because the bus is sent out before anyone counts who is waiting further along the route."
 
-Your sentences are about the chocolate bar, not about the football.
+Your sentences use that same shape on your own problem, not on the full bus.
 
 ---
 

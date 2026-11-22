@@ -1,22 +1,27 @@
 # Video scripts
 
-Shoot these five films. The room plays them in a 16:9 frame. The teacher plays each one out loud, then presses Start or Next. Student laptops do not autoplay.
+Five films. The room plays them in a 16:9 frame. The teacher plays each one out loud, then presses Start or Next. Student laptops do not autoplay.
 
-Say the jobs, not the sample names. The jobs are Leader, Lead Interviewer, Theme Mapper, Insight Extractor, and Devil's Advocate.
+Length is not the limit. Each film has two jobs:
 
-Film 1 is the chocolate bar. Films 2 to 5 teach the clicks with a missing football, so the class does not copy those answers onto the cocoa board. End films 2 to 5 by saying their own cards are about the chocolate bar.
+1. The class understands what they are about to fill in, what each piece means, and why that step is worth doing.
+2. The class sees what to do on that task, who presses each button, and one practice problem that works for any project.
 
-Do not say: the class votes for who to follow; anyone can type interview questions; the team follows two or three ribs; Obstacle is the first Why; Harm is the "what goes wrong" line; the room tests solutions; the interview says it is only a guess.
+The lines under **What to say** are the film. A move that is only in the notes is a move the class will not learn.
 
-Suggested files:
+The practice problem is the same in films 2 to 5. One morning bus fills at the first stop, by the shops. Students at the later stop, on the hill, are left on the pavement with no place to stand. On Monday at 7:40 a student who was there on time could not get on, and missed the start of registration. Say the jobs, not sample student names: Leader, Lead Interviewer, Theme Mapper, Insight Extractor, Devil's Advocate.
 
-| File | Film | Length | Teacher is on | Then presses |
+Use the full bus only to show the shape. Then say: do the same moves on the problem on your board. The words change. The fields do not.
+
+Say these rules whenever they come up. There is no vote for who to follow. Only the Lead Interviewer types extra interview questions. The team follows one rib. Obstacle is the cause on that rib. Harm is the incident in the fish head. Insight is the Why marked as the root. The room finds the problem. It does not test a solution. The person in the interview speaks as someone who does that work.
+
+| File | Film | Teacher is on | Then presses | Tasks the film prepares |
 | --- | --- | --- | --- | --- |
-| `film-1-chocolate-bar.mp4` | The chocolate bar | 2:00 | Welcome | Nothing yet. Play film 2 next. |
-| `film-2-stakeholders.mp4` | Who is in this, and who do we follow? | 3:00 | Welcome, after film 1 | Start |
-| `film-3-incident.mp4` | Talk to them, then pick one moment | 3:00 | Power map, person already chosen | Next |
-| `film-4-fish.mp4` | The fish, one rib, the root, the pin | 4:00 | Incident, one incident already chosen | Next |
-| `film-5-statement.mp4` | One sentence, then three keepers | 3:00 | Pin, pin already on the fish | Next |
+| `film-1-chocolate-bar.mp4` | The chocolate bar | Welcome | Nothing yet. Play film 2 next. | What this room fills in at all |
+| `film-2-stakeholders.mp4` | Who is in this, and who do we follow? | Welcome, after film 1 | Start | People, Merge, Power |
+| `film-3-incident.mp4` | Talk to them, then pick one moment | Power map, person already chosen | Next | Interview, Incident |
+| `film-4-fish.mp4` | The fish, one rib, the root, the pin | Incident, one incident already chosen | Next | Causes, One rib, Why, Pin |
+| `film-5-statement.mp4` | One sentence, then three keepers | Pin, pin already on the fish | Next | Statement, Choose 3 |
 
 The pack screen has no film.
 
@@ -25,212 +30,312 @@ The pack screen has no film.
 ## Film 1 — The chocolate bar
 
 **File.** `film-1-chocolate-bar.mp4`  
-**Length.** 2:00  
-**Clicks.** None.  
-**Story.** Cocoa only.
+**Prepares.** The job of the whole room, before anyone types.  
+**Practice problem.** None yet. This film is the scene. The method in the later films works on any problem.
 
-### Shot 1 — 0:00 to 0:20
+### The idea
 
-**Picture.** An ordinary wrapped chocolate bar on a table. Hands unwrap it. No logos that need a licence.  
-**Say.** This is an ordinary chocolate bar. Most of the people who will eat it never see the farm it came from.
+A project in this room does not start with a fix. It starts with three questions.
 
-### Shot 2 — 0:20 to 0:55
+- Who is this a problem for?
+- What happened to them, in one real moment?
+- Why does that moment keep happening?
 
-**Picture.** A simple chain of four cards, left to right: farm, buying station, maker, shop. Cut between a pod, beans drying in the open, a scale, and the bar.  
-**Say.** The work happens on cocoa farms, including farms in Côte d'Ivoire and Ghana. Families cut the pods, ferment the beans, and dry them. Children are often part of that work. The tools are machetes and the buyer's scale. Beans dry in the open, so rain can spoil a week of work. Buying agents, cooperatives, and chocolate makers stand between the farm and the bar.
+Those three questions become one sentence later:
 
-### Shot 3 — 0:55 to 1:15
+**[who] needs [need], but [obstacle], so [harm], because [insight].**
 
-**Picture.** One card: "About 6 cents of each dollar." The bar sits beside it.  
-**Say.** Here is the number to keep. The farmer receives about 6 cents of each dollar spent on the bar.
+Who is a real person. Need is what they are trying to get done. Obstacle is what stands in the way. Harm is the moment that happened. Insight is the reason underneath.
 
-### Shot 4 — 1:15 to 2:00
+### What to say
 
-**Picture.** The room's five phase tiles: People, the moment, the fish, the sentence, the pack. No cursor. No click.  
-**On screen.** Find the problem. Do not design the fix.  
-**Say.** This room answers three questions. Who is this a problem for? What happens to them? Why does it keep happening? You will not design a new bar, an app, or a campaign today. You will name who it is for, find one real moment, trace why that moment happens, and leave with three problem statements the team can stand behind.
+**Picture.** An ordinary chocolate bar. No logo that needs a licence.
+
+This is an ordinary chocolate bar. Most of the people who will eat it never see the farm.
+
+**Picture.** Four steps: farm, buying station, maker, shop. Pods, beans drying outside, a scale, then the bar.
+
+On cocoa farms, including farms in Côte d'Ivoire and Ghana, families cut the pods, ferment the beans, and dry them. Children often do part of that work. The tools are machetes and the buyer's scale. Beans dry in the open, so rain can spoil a week of work. Buying agents, cooperatives, and chocolate makers stand between the farm and the shop. The farmer receives about 6 cents of each dollar spent on the bar.
+
+**Picture.** The five phase tiles. No cursor.
+
+Any project in this room uses the same questions, whatever the problem is. Who is it for? What happened to them? Why does it keep happening? You will not design a new bar, an app, or a campaign. You will name the person, find one real moment, trace why that moment happens, and leave with three problem statements the team can stand behind.
 
 ---
 
 ## Film 2 — Who is in this, and who do we follow?
 
 **File.** `film-2-stakeholders.mp4`  
-**Length.** 3:00  
-**Clicks.** People, merge, matrix, one person. Use the football, then cut back to the empty cocoa board only at the end.  
-**Story.** A student brings a football for break. On Thursday the whistle goes and the ball is still in the shed. The game never starts.
+**Prepares.** People, Merge, and Power.  
+**Practice problem.** The morning bus that is already full. Then the same fields on the class problem.
 
-### Shot 1 — 0:00 to 0:25
+### The idea
 
-**Picture.** A football beside a locked shed. The whistle is about to go.  
-**Say.** A stakeholder is a person or a group this situation touches. Name a kind of person, such as caretaker or year group. Do not name a product, an app, or a solution.
+A stakeholder is a person or a group the situation touches. A card names a kind of person, such as bus driver or year group. A card is not a product, an app, or a solution.
 
-### Shot 2 — 0:25 to 0:55
+Two cards that mean the same person become one stack. Two different people stay apart, even if both are adults.
 
-**Picture.** Five cards on a table: the student who brought the ball, the year group, the duty teacher, the coach, the caretaker. Two cards that mean the same student are stacked. The duty teacher and the coach stay apart.  
-**Say.** Here are five people the missing ball touches. Two cards that mean the same person get stacked. "The boy with the ball" and "the student who brought the football" are one person. The duty teacher and the coach are not the same person, even if both are adults. The Theme Mapper merges. Anyone else can point at a pair. The Devil's Advocate can stop a merge that glues two different people together.
+Power is how much they can change what happens. Interest is how much they care. The four corners:
 
-### Shot 3 — 0:55 to 1:35
+| Power | Interest | Corner | What it means |
+| --- | --- | --- | --- |
+| High | High | Work closely | They can change it, and they care. |
+| High | Low | Keep satisfied | They can change it, and they may not care. Often a blocker. |
+| Low | High | Keep involved | They care, and they cannot change it alone. Often the person who feels it every day. |
+| Low | Low | Monitor | They are far from the day. |
 
-**Picture.** The four corners of the matrix, with the five cards placed.
+You make the map so the team can see who feels the problem and who can block a change, then follow one person. Without it, the sentence starts with "students" or "people", and the blocker never gets a card.
 
-| Corner | Card in the film |
-| --- | --- |
-| Work closely. High power, high interest. | The coach |
-| Keep satisfied. High power, low interest. | The caretaker |
-| Keep involved. Low power, high interest. | The student who brought the ball |
-| Monitor. Low power, low interest. | Leave this corner empty, or use a distant office |
+The team follows one person. The Lead Interviewer chooses. There is no vote. **What goes wrong** is an early guess about that person's day. It is not the final Harm. The checked moment comes in the next film.
 
-**Say.** Power is how much they can change what happens. Interest is how much they care. The caretaker has the key and may not care about the game. Keep satisfied. The coach wants the game and can change the routine. Work closely. The student who brought the ball cares a lot and cannot open the shed. Keep involved.
+### The example, on any project
 
-### Shot 4 — 1:35 to 2:20
+On the full-bus problem the cards are: the student at the hill stop, the year group, the bus driver, the form tutor, the transport manager.
 
-**Picture.** Screen recording of the app, football labels only, in this order.  
-1. Everyone types a short label and presses **Add my stakeholder**. The cards stay hidden.  
-2. The Theme Mapper drags one card onto its twin. **Merges done.**  
-3. The Theme Mapper drags each card into a corner.  
-4. The Lead Interviewer taps **Who we follow**, chooses the student who brought the ball, and presses **Write what goes wrong**. The line on screen: "Break starts and there is no ball."  
-**Say.** In the room, everyone adds people in silence. Aim for three cards each. Others cannot see them until the teacher ends the time. The Theme Mapper stacks twins. Do not retype them. Then the Theme Mapper places every card on the matrix. The Lead Interviewer taps one person to follow and writes what goes wrong. That sentence is an early guess. The checked moment comes next. There is no vote on this choice. The Insight Extractor can star someone who feels this every day. The Devil's Advocate looks for a missing person who could block the situation.
+"The girl at the hill stop" and "the student left on the pavement" are one person. Stack them. The bus driver and the transport manager stay apart.
 
-### Shot 5 — 2:20 to 3:00
+The form tutor wants the student in registration and can change the morning routine. Work closely. The transport manager runs the buses and may not care about one student at one stop. Keep satisfied. The student cares and cannot add a second bus. Keep involved.
 
-**Picture.** The football cards fade. The cocoa board is empty, waiting.  
-**On screen.** Your cards are about the chocolate bar.  
-**Say.** In the film, the team follows the student who brought the ball. Your cards are about the chocolate bar, not the football. When this film ends, the teacher presses Start. Do not press it inside the film.
+The Lead Interviewer follows the student at the hill stop. What goes wrong: "The morning bus arrives full, and there is no place to stand."
+
+On another problem, the names change. A cocoa board might follow a cocoa farmer. A lunch board might follow a student who cannot get a meal. The fields are the same: a kind of person, one stack per person, one corner each, one person to follow, and one early line about what goes wrong.
+
+### What you do
+
+**People.** Everyone types a short label and presses **Add my stakeholder**. Work in silence. Aim for three cards each. Others cannot see the cards until the teacher ends the time. Press **Remove** on a card you wrote yourself. The room rejects an app, a platform, or a blame word.
+
+**Merge.** Only the Theme Mapper changes the pile. Drag one card onto the card that means the same person. Tap a stack, type the name it should keep, and press **Rename label**. Press **Unmerge** if two different people were joined. When the pile is clean, press **Merges done**. Everyone else watches.
+
+**Power.** The Theme Mapper drags each card into a corner, or taps the card and then the corner. The Lead Interviewer taps one person under **Who we follow**. The same choice is the menu **Whose problem we follow**. They write a full line and press **Write what goes wrong**. Everyone else watches. There is no vote.
+
+### What to say
+
+A stakeholder is a person or a group this situation touches. The map puts each of them in a corner by power and interest. Power is how much they can change what happens. Interest is how much they care. You make the map so you can see who feels the problem and who can block a change, and then follow one person. If you skip it, the sentence starts with "students" or "people", and the person who could change the morning never gets a card.
+
+Watch the full bus, then use the same moves on your own problem. Five people touch the morning queue: the student at the hill stop, the year group, the bus driver, the form tutor, and the transport manager. "The girl at the hill stop" and "the student left on the pavement" are one person, so those two cards become one stack. The bus driver and the transport manager are different people, so they stay apart.
+
+The form tutor wants the student in registration and can change the morning routine. That corner is Work closely. The transport manager runs the buses and may not care about one student at one stop. That corner is Keep satisfied. That is the blocker, and the blocker stays on the map. The student cares and cannot add a second bus. That corner is Keep involved. That is who the team follows, because that is who feels it. There is no vote for who to follow.
+
+Name a kind of person. Bus driver. Year group. Cocoa farmer. Leave products and solutions off the board.
+
+Then the moves, in this order.
+
+Everyone types a kind of person and presses **Add my stakeholder**. Work in silence. Aim for three cards each. The other students can see how many cards you have. They cannot read them until the teacher ends the time. Press **Remove** on a card you wrote yourself if it is an app, a product, or a blame word.
+
+The cards then turn face up. Only the Theme Mapper changes them. Drag one card onto the card that means the same person. Tap a stack, type the name it should keep, and press **Rename label**. Press **Unmerge** if two different people were joined. When the pile is clean, the Theme Mapper presses **Merges done**. Everyone else watches this screen. You cannot type on it.
+
+The Theme Mapper then places every card. Drag a card into a corner, or tap the card and then tap the corner. The Lead Interviewer taps one person under **Who we follow**. The same choice is the menu **Whose problem we follow**. On the bus, that person is the student at the hill stop. The Lead Interviewer writes a full line for what goes wrong and presses **Write what goes wrong**. On the bus the line is "The morning bus arrives full, and there is no place to stand." That line is an early guess about their day. It is not the Harm in the final sentence. The checked moment comes in the next film. Everyone else watches. You do not move cards, and you do not pick the person.
+
+On your problem, do the same. Add the people. Stack the twins. Place each card by power and interest. Follow the person who feels it. Keep the blocker on the map. Write one early line about what goes wrong for the person you follow.
+
+When this film ends, the teacher presses Start.
 
 ---
 
 ## Film 3 — Talk to them, then pick one moment
 
 **File.** `film-3-incident.mp4`  
-**Length.** 3:00  
-**Clicks.** Interview, one extra question, one incident, a vote.  
-**Story.** Same football. The person answers as themselves, with a real moment. They do not say they are a guess.
+**Prepares.** The short interview, then one incident.  
+**Practice problem.** The same student and the same full bus.
 
-### Shot 1 — 0:00 to 0:30
+### The idea
 
-**Picture.** The student who brought the ball, standing by the locked shed.  
-**Say.** You have a person. You do not yet have a moment. A short interview is how you stop guessing about their day. You ask what they are trying to get done, what gets in the way, and when and where it happened. You are listening for a fact, not for their advice on a solution.
+You have a person. You do not yet have a moment you could point to. The interview checks the early guess against that person's day. You are listening for a fact, not for their advice on a solution. The moment you keep becomes the head of the fish, which is Harm in the final sentence.
 
-### Shot 2 — 0:30 to 1:15
+Read three things:
 
-**Picture.** Four lines of dialogue, spoken, not as a chat window yet.
+- What they are trying to get done. This later becomes Need.
+- What gets in the way.
+- One moment with a when, a where, and what happened. This later becomes Harm.
 
-**Say.**  
+The person speaks as someone who does that work. They use real times, places, seasons, or prices. It is not a recording of one visit. Only the Lead Interviewer types extra questions, up to eight. Everyone else reads. Ask about the day. If someone asks what to build, the person does not pick the team's solution.
+
+An incident is one fact that happened. It needs a when, a where, and a what. "People are careless" is blame, not an incident. The team votes. The winner goes in the head of the fish. It is the core problem. It is not a cause, and it is not a solution.
+
+### The example, on any project
+
 Team: What are you trying to get done?  
-Them: I'm trying to get a game going before break ends.  
+Them: I'm trying to reach school in time for registration.
+
 Team: What gets in the way?  
-Them: The ball is locked in the shed, and break is only fifteen minutes.  
+Them: There is one bus, it fills at the first stop, and the hill stop is eight minutes later.
+
+Team: Where is the first stop?  
+Them: It is by the shops, and most of the students get on there.
+
 Team: Can you give us one moment?  
-Them: On Thursday, at outdoor break, the whistle went and the ball was still inside.  
-Team: What do you wish people understood?  
-Them: I brought the ball. I still could not start the game.
+Them: On Monday at 7:40 the bus reached the hill stop already full, and I was left on the pavement.
 
-### Shot 3 — 1:15 to 2:05
+The incident: "On Monday at 7:40, the bus reached the hill stop already full, and the student was left on the pavement and missed the start of registration."
 
-**Picture.** Screen recording. The short interview is on the board for everyone. Only the Lead Interviewer has the box that says **Ask one more question**. They type "Where is the shed?" and press **Ask**. The answer names the place: across the field, locked before the whistle. No other student has a box.  
-**Say.** The short interview appears for everyone. The person speaks as someone who lives that day, with real times and places. It is not a recording of one visit. Under it, only the Lead Interviewer types. Up to eight more questions. Everyone else reads the answers as they arrive. Ask about their day. If someone asks "what app should we build?", the person will not pick your solution.
+On another problem, ask the same three things. A farmer might say they are trying to sell a dry bag, the scale at the buying station reads light, and last Thursday the bag lost weight on that scale. The shape is the same: a goal, a block, and one moment you could point to.
 
-### Shot 4 — 2:05 to 3:00
+### What you do
 
-**Picture.** The Lead Interviewer types the incident and presses **Add the incident**. The card reads: "On Thursday at outdoor break, the ball was still in the shed when the whistle went, and the game never started." A second card, "People are careless with equipment," gets sent back. Students press the vote button. The winner is marked as the one that will become the fish head.  
-**Say.** Write one fact: a when, a where, and what happened. "On Thursday at outdoor break, the ball was still in the shed when the whistle went" is an incident. "People are careless" is blame, and the Devil's Advocate can send it back. The team votes. The winner is the core problem. It goes in the head of the fish. It is not a cause, and it is not a solution. Your moment is about the chocolate bar, not the football.
+**Read.** The short interview is on the board for everyone. Read what they are trying to get done, what gets in the way, and one moment.
+
+**Ask.** Only the Lead Interviewer has the box. The box says **Ask one more question**. Type about the person's day and press **Ask**. Eight questions is the limit. Everyone else reads the answers.
+
+**Write.** Only the Lead Interviewer writes the incident. One fact, with a when, a where, and a what. Press **Add the incident**. Everyone else sees "Vote on the board. You cannot write the incident."
+
+**Vote.** Every student presses **Vote for this** on one incident card. One vote each. The incident with the most votes becomes the fish head when the teacher presses Next.
+
+### What to say
+
+You have a person. You do not yet have a moment you could point to. The line on the map, "what goes wrong", was an early guess. The interview is how you check it. Ask what they are trying to get done, what gets in the way, and when and where it happened. The first answer later becomes Need. The last answer becomes the incident, and that incident is Harm. You want a fact. You do not want them to choose your solution.
+
+The short interview is already on the board for everyone. The person speaks as someone who lives that day, with real times and places. It is not a recording of one visit. Only the Lead Interviewer has the box under it. The box says **Ask one more question**. Type about the person's day and press **Ask**. Eight questions is the limit. Everyone else reads each answer as it arrives. You do not each open your own chat.
+
+Here is the shape, on the full bus. He is trying to reach school in time for registration. There is one bus, it fills at the first stop, and the hill stop is eight minutes later. On Monday at 7:40 the bus reached the hill stop already full, and he was left on the pavement. That last line is the incident: "On Monday at 7:40, the bus reached the hill stop already full, and the student was left on the pavement and missed the start of registration."
+
+"Students get to the stop too late" is not an incident. It blames a person, and it has no when or where. The board sends that wording back.
+
+The Lead Interviewer writes one fact and presses **Add the incident**. A when, a where, and a what. Everyone else reads the card and presses **Vote for this**. You have one vote. You cannot write the incident yourself. The card with the most votes becomes the head of the fish when the teacher presses Next. That head is the core problem. It is not a cause, and it is not a solution.
+
+Use the same shape on your problem. Read the three answers. Only the Lead Interviewer asks, and only the Lead Interviewer writes the moment. Everyone votes once. The winner goes in the head of the fish.
 
 ---
 
 ## Film 4 — The fish, one rib, the root, the pin
 
 **File.** `film-4-fish.mp4`  
-**Length.** 4:00  
-**Clicks.** Add a cause, follow one rib, add Whys, mark the root, save labels, place the pin.  
-**Picture of the fish.** Head on the right. Spine across the middle. The upper bones run down into the spine. The lower bones hang down from it. Bones do not curve up into the head.
+**Prepares.** Causes, one rib, the Why chain, and the pin.  
+**Picture of the fish.** The head is on the right. The spine runs across. The upper bones run down into the spine. The lower bones hang down from it. Bones do not curve up into the head.
 
-### Shot 1 — 0:00 to 0:25
+### The idea
 
-**Picture.** The fish. The head reads: "On Thursday at outdoor break, the ball was still in the shed when the whistle went."  
-**Say.** The head of the fish is the incident you just chose. The rest of the fish asks why that moment happened. It does not ask how to fix it.
+The fish is how you find why the moment keeps happening, before anyone names a fix. The head is the incident you chose. The ribs ask why that moment happened. They do not ask how to fix it. You follow one rib so the Why chain has one path. The pin then carries two different words into the sentence: Obstacle is the cause on that rib, and Insight is the Why you mark as the root.
 
-### Shot 2 — 0:25 to 1:10
+Six ribs, six angles:
 
-**Picture.** Six ribs, one cause on each, dropping to the spine or hanging below it.
+| Rib | The question it asks | You write |
+| --- | --- | --- |
+| Timing | When did it happen, or how long did it take? | A cause about time. |
+| Communication | What was someone told, or not told? | A cause about a message. |
+| Perceived value | Did it feel worth the effort? | A cause about whether people bothered. |
+| Process | Which steps did people have to follow? | A cause about the routine. |
+| Tools | What did people have to use? | A cause about a thing they needed. |
+| Environment | Where was it, and what was around it? | A cause about the place. |
 
-| Rib | Cause on the football fish |
+A cause is something you could check. It is not a solution, and it is not blame.
+
+The team then follows one rib. The Whys grow on that rib only, to the left. Each Why is tagged Evidence, Assumption, or Need to check. Stop when one Why is the reason you trust. That is often the third or the fourth. Mark **This Why is the root cause**. You do not have to write a fifth.
+
+The pin carries two different labels into the sentence:
+
+- Obstacle is the cause written on the rib.
+- Insight is the Why marked as the root.
+
+The first Why explains the cause. It does not replace the cause. The incident stays in the head. On the next screen that incident is Harm.
+
+### The example, on any project
+
+Head: "On Monday at 7:40, the bus reached the hill stop already full, and the student was left on the pavement."
+
+| Rib | Cause |
 | --- | --- |
-| Timing | Break is only fifteen minutes. |
-| Communication | Nobody is told the shed will lock. |
-| Perceived value | A short game feels pointless. |
-| Process | The shed is locked on a round that finishes before break. |
-| Tools | There is one key, and it leaves with the caretaker. |
-| Environment | The shed is across the field. |
+| Timing | The hill stop is eight minutes after the first, and the bus is already full. |
+| Communication | Nobody tells the hill stop that the bus has no places left. |
+| Perceived value | Waiting for a later bus feels pointless once registration has started. |
+| Process | Places are taken in the order of the stops, and none are held for later stops. |
+| Tools | There is one bus, and it fills at the first stop. |
+| Environment | The first stop is by the shops, where most of the students get on. |
 
-**Say.** Six ribs, six angles. Timing asks when it happened, or how long it took. Communication asks what someone was told, or not told. Perceived value asks whether it felt worth the effort. Process asks which steps people had to follow. Tools asks what people had to use. Environment asks where it was, and what was around it.
+The team follows Tools.
 
-### Shot 3 — 1:10 to 1:45
+Why does the one bus fill at the first stop? Because every place is open to whoever boards first.  
+Why does the first stop take every place? Because that stop comes first, and more students wait there.  
+Why is there no place left at the hill stop? Because the bus is sent out before anyone counts who is waiting further along the route.
 
-**Picture.** A student taps Tools, types "There is one key, and it leaves with the caretaker," and presses **Add it to Tools**. The card appears on that rib. The Theme Mapper taps a card on the wrong rib and presses **Move here**.  
-**Say.** Each person picks a rib, writes one cause of the incident, and adds it. The card appears on that rib. The Theme Mapper can move a card that landed on the wrong rib. The Devil's Advocate sends back a card that blames a person, or a card that says nothing you could check. Nobody picks the root yet. Do not write a solution.
+Stop. That third Why is the root.
 
-### Shot 4 — 1:45 to 2:05
+Obstacle: "There is one bus, and it fills at the first stop."  
+Insight: "The bus is sent out before anyone counts who is waiting further along the route."
 
-**Picture.** The six ribs. A tap on Tools. The label changes to **We follow this bone**. The other ribs dim.  
-**Say.** Next, the team reads the six ribs and taps one rib to follow. This team taps Tools. The Whys happen on that rib only.
+On another problem, pick the rib that matches the kind of cause you found. A light scale is Tools. A buying day that ends before the farmer arrives is Timing. An open yard is Environment. Then ask Why to the left until one answer is the reason you trust. Pin the cause as Obstacle and that Why as Insight.
 
-### Shot 5 — 2:05 to 3:10
+### What you do
 
-**Picture.** The Why chain grows to the left of the Tools cause.  
-1. Why is there one key that leaves with the caretaker? Because every key is on one ring. Tag: Evidence.  
-2. Why does the ring leave? Because it goes on the lock-up round. Tag: Evidence.  
-3. Why is the key gone at break? Because the lock-up round is scheduled before break. The Insight Extractor presses **This Why is the root cause**.  
-**Say.** The Insight Extractor asks Why, and the answer grows to the left. Why is there one key that leaves with the caretaker? Because every key is on one ring. Why does the ring leave? Because it goes on the lock-up round. Why is the key gone at break? Because the lock-up round is scheduled before break. Stop there. The third Why is the root. A fourth or a fifth is allowed. So is stopping earlier, when the answer is the reason you trust. Tap that card and mark **This Why is the root cause**. Each Why is tagged Evidence, Assumption, or Need to check. Only the Insight Extractor adds a Why to the rib.
+**Causes.** Each student taps one rib, writes why the incident happened from that angle, and presses **Add it to** that rib. The Theme Mapper can tap a card that landed on the wrong rib, then press **Move selected here** on the better rib. Other students cannot move a card after it is placed. Do not choose a root yet.
 
-### Shot 6 — 3:10 to 4:00
+**One rib.** Read the cause on each rib. Each student taps **Follow this bone** on the one rib the team will follow. The button then says **Following this bone**. The Whys happen on that rib only.
 
-**Picture.** Two labels, then the pin on the Tools rib. The head text does not change.  
-**On screen.**  
-Obstacle: There is one key, and it leaves with the caretaker.  
-Insight: The lock-up round is scheduled before break.  
-**Say.** The pin carries two labels, and they are not the same card. Obstacle is the cause written on the rib. Insight is the Why marked as the root. The first Why explains the cause. It does not replace it. The Insight Extractor presses **Save labels**. The Theme Mapper presses **Place pin on the fish**. One to three pins are allowed. The incident stays in the head. On the next screen, that incident becomes Harm. Your fish is about the chocolate bar, not the football.
+**Why.** Only the Insight Extractor adds a Why. Tag it Evidence, Assumption, or Need to check, then press **Add Why 1**, then **Add Why 2**, and so on. The answer sits further left. Tap the Why that is the real reason and press **This Why is the root cause**. Press **Clear the root mark** if the mark is on the wrong card. On a Need-to-check card, the Lead Interviewer types who to ask and presses **Save who to ask**. Everyone else reads. Five Whys is the most. You can stop earlier.
+
+**Pin.** The Insight Extractor presses **Choose this cause** on the rib the team followed, checks Obstacle and Insight, and presses **Save labels**. The Theme Mapper presses **Place pin on the fish** after the labels are saved. One to three pins are allowed. The Theme Mapper cannot place a pin until the labels are saved.
+
+### What to say
+
+The fish is how you find why that moment keeps happening, before anyone names a fix. The head is the incident you just chose. The ribs ask why that moment happened. They do not ask how to fix it. The bones run down to the spine. They do not curve up into the head. You follow one rib so the Why chain has one path. If you skip the fish, the sentence can name the moment and still hide the reason.
+
+There are six angles. Timing is when, or how long. Communication is what someone was told, or not told. Perceived value is whether it felt worth the effort. Process is the steps people had to follow. Tools is what people had to use. Environment is the place, and what was around it. A cause is something you could check. It is not a solution, and it is not blame.
+
+On the full bus, the head says the bus reached the hill stop already full and the student was left on the pavement. The hill stop is eight minutes after the first, and the bus is already full. That is Timing. Nobody tells the hill stop that the bus has no places left. That is Communication. Waiting for a later bus feels pointless once registration has started. That is Perceived value. Places are taken in the order of the stops, and none are held for later stops. That is Process. There is one bus, and it fills at the first stop. That is Tools. The first stop is by the shops, where most of the students get on. That is Environment.
+
+In the room, each person taps one rib, writes one cause of the incident, and presses **Add it to** that rib. The card appears on that rib. The Theme Mapper can tap a card that landed on the wrong rib, then press **Move selected here** on the better rib. Everyone else leaves the card where it landed. Do not write a solution, and do not pick the root yet.
+
+Then each student reads the cause on every rib and taps **Follow this bone** on the one rib the team will follow. The button then says **Following this bone**. This team taps Tools, because the cause they trust is the one bus. The Whys happen on that rib only.
+
+Only the Insight Extractor adds a Why. Everyone else reads the chain and does not get the Why box. The answer grows to the left. Tag it Evidence, Assumption, or Need to check, then press **Add Why 1**. The next answer is **Add Why 2**, and so on. Why does the one bus fill at the first stop? Because every place is open to whoever boards first. Why does the first stop take every place? Because that stop comes first, and more students wait there. Why is there no place left at the hill stop? Because the bus is sent out before anyone counts who is waiting further along the route. Stop. Tap that third Why and press **This Why is the root cause**. A fourth or a fifth is allowed. So is stopping earlier, when the answer is the reason you trust. Five is the most. If the mark is on the wrong card, press **Clear the root mark**. On a Need to check card, the Lead Interviewer types the person to ask and presses **Save who to ask**.
+
+The pin has two labels, and they are not the same card. Obstacle is the cause on the rib: one bus fills at the first stop. Insight is the marked Why: the bus is sent out before anyone counts who is waiting further along the route. The first Why explains the cause. It does not replace it. The Insight Extractor presses **Choose this cause**, checks those two labels, and presses **Save labels**. The Theme Mapper presses **Place pin on the fish** after the labels are saved. One to three pins are allowed. The incident stays in the head. On the next screen that incident is Harm.
+
+On your problem, do the same. One cause on the rib that matches its angle. One rib to follow. Why, to the left, until the reason you trust. Obstacle is the cause. Insight is that Why.
 
 ---
 
 ## Film 5 — One sentence, then three keepers
 
 **File.** `film-5-statement.mp4`  
-**Length.** 3:00  
-**Clicks.** Fill Need, Submit, tag, propose a fix, two votes, three sentences remain.  
-**Story.** Same football sentence, then a reminder that the class writes about chocolate.
+**Prepares.** One sentence each, then the top three.  
+**Practice problem.** The full-bus sentence, as the shape. The class writes the same shape about their own problem.
 
-### Shot 1 — 0:00 to 0:35
+### The idea
 
-**Picture.** The sentence skeleton, large:  
-**[who] needs [need], but [obstacle], so [harm], because [insight].**  
-**Say.** The sentence has five blanks. Who needs need, but obstacle, so harm, because insight. The football shows the shape. Your words will be about the chocolate bar.
+The sentence is how the map, the interview, the incident, and the fish become one line the team can stand behind. The five blanks already have sources. Need is the only one each student shapes, so a product does not sneak in where a human need belongs. The team then keeps three sentences, because one sentence can be too broad and five is more than the pack can carry.
 
-### Shot 2 — 0:35 to 1:25
+**[who] needs [need], but [obstacle], so [harm], because [insight].**
 
-**Picture.** The five blanks filling in, one at a time.
+| Blank | What it means | Where it comes from | Who shapes it |
+| --- | --- | --- | --- |
+| Who | The person this is for | The person the Lead Interviewer followed | Already filled. Change it only if it is wrong. |
+| Need | What they are trying to get done, as a human need | The interview answer to "what are you trying to get done?" | You edit this. It is the blank you shape. |
+| Obstacle | What stands in the way | The cause on the rib you pinned | Already filled. Change it only if it is wrong. |
+| Harm | The moment that happened | The incident in the fish head | Already filled. Change it only if it is wrong. It is not the early "what goes wrong" line. |
+| Insight | The reason underneath | The Why marked as the root | Already filled. Change it only if it is wrong. |
 
-| Blank | Comes from | Football words |
-| --- | --- | --- |
-| Who | The person the Lead Interviewer followed | the student who brought the ball |
-| Need | The interview line "what are you trying to get done?", edited by the student | to get a game going before break ends |
-| Obstacle | The cause on the pinned rib | there is one key, and it leaves with the caretaker |
-| Harm | The incident in the fish head | on Thursday the ball was still in the shed when the whistle went |
-| Insight | The Why marked as the root | the lock-up round is scheduled before break |
+Need is a human need. "An app that shows which bus has a place" is a solution. The board will not accept it. An edit to any blank is kept.
 
-**Say.** Who is the person you followed. Need starts from the interview answer to what they are trying to get done. You edit that into a human need. "An app that unlocks the shed" is a solution, and the board will not accept it. Obstacle is the cause you pinned. Harm is the incident in the fish head, not the earlier guess on the matrix. Insight is the Why marked as the root. The other blanks arrive filled in. Change one if it is wrong. An edit is kept.
+Each person writes one sentence and presses **Submit**. Writing is silent. The room waits for all five.
 
-### Shot 3 — 1:25 to 1:55
+Then the team checks the five sentences. The Devil's Advocate tags a weak sentence. The Insight Extractor may propose a fix. Only the author accepts it. The Theme Mapper stacks two sentences that say the same thing. Each student has two votes. The three with the most votes, plus the map and the fish, are the pack.
 
-**Picture.** One student edits Need and presses **Submit**. Four other sentences are still waiting.  
-**Say.** Each person writes their own sentence and presses Submit. The room waits until all five are in. Writing is silent.
+### The example, on any project
 
-### Shot 4 — 1:55 to 2:35
+The student at the hill stop needs to reach school in time for registration, but there is one bus and it fills at the first stop, so on Monday at 7:40 the student was left on the pavement, because the bus is sent out before anyone counts who is waiting further along the route.
 
-**Picture.** Five sentences. The Devil's Advocate tags one **Has solution**. The Insight Extractor presses **Propose fix**. Only the author presses **Accept fix**. The Theme Mapper stacks two sentences that say the same thing.  
-**Say.** On the next screen the team checks the five sentences. The Devil's Advocate can tag one that is too broad, that contains two problems, that hides a solution, that says "users" or "people" instead of the person, or that lost its obstacle or its harm. The Insight Extractor may propose a fix. Only the author accepts it. The Theme Mapper stacks duplicates, without retyping them.
+Read it as five parts. Who: the student at the hill stop. Need: to reach school in time for registration. Obstacle: one bus fills at the first stop. Harm: on Monday at 7:40 the student was left on the pavement. Insight: the bus is sent out before anyone counts who is waiting further along the route.
 
-### Shot 5 — 2:35 to 3:00
+On another problem, keep those five jobs and change the words. A farmer needs to sell a fairly weighed bag, but the buyer's scale reads light, so last Thursday the bag was marked down, because the farmer cannot check the scale. Same sentence. Different problem.
 
-**Picture.** Each student has two vote buttons. Three sentences remain. Beside them, the map and the fish.  
-**On screen, the shape only.** The student who brought the ball needs to get a game going before break ends, but there is one key and it leaves with the caretaker, so on Thursday the ball was still in the shed when the whistle went, because the lock-up round is scheduled before break.  
-**Say.** The Leader opens the vote. Each student has two votes. The top three sentences stay. Those three, plus the map and the fish, are what the team takes out of the room. Your sentences are about the chocolate bar, not about the football.
+### What you do
+
+**Write.** Each student reads the five blanks. Edit Need into a human need. Fix any other blank that is wrong. Press **Save draft** to keep working. Press **Submit** when the sentence is ready. Submit stays off until every blank has text, Who is a real person, and Need has no solution word. Wait for the other four. Writing is silent.
+
+**Choose 3.** Tap a sentence to work on it. The Devil's Advocate presses **Tag** and one of: Too broad, Multi-problem, Has solution, Generic Who, Missing carry, Solution in Need. Press the tag again to clear it. The Insight Extractor edits the five proposed blanks and presses **Propose fix**, or presses **None needed** if the sentences are already sound. Only the author of that sentence presses **Accept fix**. The Theme Mapper taps one sentence, then a second sentence that says the same thing, and they stack. Each student has two votes. Press **Vote** on a sentence. The button shows that sentence's Need. The three with the most votes stay.
+
+### What to say
+
+You are about to write one sentence, then the team will keep three. The sentence is how the map, the interview, the incident, and the fish become one line. It reads: who needs need, but obstacle, so harm, because insight. You write it so the person would recognise themselves, and so a product is not hiding where the need should be.
+
+Who is the person you followed, from **Who we follow**. Need is what they are trying to get done. You edit that line so it is a human need, not a product. Obstacle is the cause you pinned. Harm is the incident in the fish head, not the early "what goes wrong" line. Insight is the Why you marked as the root. Four blanks arrive filled in. Need is the one you shape. Change a blank that is wrong. Your edit stays.
+
+Here is the shape, on the full bus. The student at the hill stop needs to reach school in time for registration, but there is one bus and it fills at the first stop, so on Monday at 7:40 the student was left on the pavement, because the bus is sent out before anyone counts who is waiting further along the route.
+
+"An app that shows which bus has a place" is not a need. It is a solution, and the board will not take it. On your problem, keep the same five parts and write the words that belong to your person.
+
+Each person reads the five blanks on their own screen. Edit Need. Fix any other blank that is wrong. Press **Save draft** if you are still working. Press **Submit** when the sentence is ready. Submit stays off until every blank has text, Who names a real person, and Need has no solution word. Writing is silent. Wait until all five are in.
+
+Then the five sentences are on the board. Tap one to work on it. The Devil's Advocate tags a weak sentence. The tags are **Too broad**, **Multi-problem**, **Has solution**, **Generic Who**, **Missing carry**, and **Solution in Need**. Press the tag again to clear it. The Insight Extractor can edit the five blanks and press **Propose fix**. If the sentences are already sound, press **None needed**. Only the author of that sentence presses **Accept fix**. Nobody else can accept it. The Theme Mapper taps one sentence, then a second sentence that says the same thing, and they become one stack.
+
+Each student has two votes. Press **Vote** on a sentence. The button shows that sentence's Need. The three with the most votes stay, with the map and the fish. Those three are the pack.

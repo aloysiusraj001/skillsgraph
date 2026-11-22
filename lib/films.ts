@@ -50,7 +50,7 @@ export const FILMS: Film[] = [
       {
         heading: "People",
         paragraphs: [
-          "A stakeholder is a person or a group this situation touches. Add a short label, such as caretaker or year group. Leave products and solutions off the board.",
+          "A stakeholder is a person or a group this situation touches. Add a short label, such as bus driver or year group. Leave products and solutions off the board.",
           "Work in silence until the teacher ends the time. Three cards each is the aim. Fewer cards do not stop the room. Others cannot see your cards until the time ends.",
         ],
       },
@@ -58,7 +58,7 @@ export const FILMS: Film[] = [
         heading: "Merge",
         paragraphs: [
           "Stack cards that name the same person. Do not retype them. Only the Theme Mapper merges, by dragging one card onto the other. Anyone else can suggest a pair. The Devil's Advocate can stop one bad merge.",
-          "The duty teacher and the coach are different people, even if both are adults. When the pile is clean, the Theme Mapper taps Merges done.",
+          "The bus driver and the transport manager are different people, even if both are adults. When the pile is clean, the Theme Mapper taps Merges done.",
         ],
       },
       {
@@ -66,7 +66,7 @@ export const FILMS: Film[] = [
         paragraphs: [
           "The Theme Mapper places every card. Power is how much they can change what happens. Interest is how much they care. The four corners are Work closely, Keep satisfied, Keep involved, and Monitor.",
           "The Lead Interviewer taps the one person the team will follow and writes what goes wrong for that person. That sentence is the early guess. There is no vote. The Insight Extractor can mark daily pain. The Devil's Advocate looks for a missing blocker and for guesses treated as facts.",
-          "In a football example, the team follows the student who brought the ball. The caretaker has the key and may not care about the game. The student cares and cannot open the shed. Your cards are about the chocolate bar, not the football.",
+          "In the full-bus example, the team follows the student at the hill stop. The transport manager runs the buses and may not care about one student at one stop. The student cares and cannot add a second bus. Your cards are about your own problem, not the full bus.",
         ],
       },
     ],
@@ -95,7 +95,7 @@ export const FILMS: Film[] = [
       {
         heading: "One incident",
         paragraphs: [
-          "Write one fact that happened, with a when, a where, and a what. On Thursday at outdoor break, the ball was still in the shed when the whistle went is an incident. They are careless is not. The Devil's Advocate can reject blame.",
+          "Write one fact that happened, with a when, a where, and a what. On Monday at 7:40, the bus reached the hill stop already full and the student was left on the pavement is an incident. Students get to the stop too late is not. The Devil's Advocate can reject blame.",
           "Vote for one incident. The winner is the core problem. It goes in the head of the fish.",
         ],
       },
@@ -132,7 +132,7 @@ export const FILMS: Film[] = [
         heading: "Pin",
         paragraphs: [
           "The Insight Extractor checks two labels. Obstacle is the cause on the rib. Insight is the Why marked as the root. The Theme Mapper places the pin. The incident stays in the head. It is not the obstacle and it is not the insight.",
-          "In the football example the rib is Tools. The obstacle is the single key that leaves with the caretaker. The root is that lock-up happens before break. Your fish is about the chocolate bar.",
+          "In the full-bus example the rib is Tools. The obstacle is the one bus that fills at the first stop. The root is that the bus is sent out before anyone counts who is waiting further along the route. Your fish is about your own problem.",
         ],
       },
     ],
@@ -157,8 +157,8 @@ export const FILMS: Film[] = [
         heading: "Choose 3",
         paragraphs: [
           "The Devil's Advocate tags weak sentences. The Insight Extractor can propose a fix. You accept a fix only on your own card. The Theme Mapper stacks duplicates. When the Leader opens the vote, you have two votes. The team keeps three sentences.",
-          "A football sentence shows the shape: The student who brought the ball needs to get a game going before break ends, but there is one key and it leaves with the caretaker, so on Thursday the ball was still in the shed when the whistle went, because the lock-up round is scheduled before break.",
-          "Your sentences are about the chocolate bar, not about the football.",
+          "The full-bus sentence shows the shape: The student at the hill stop needs to reach school in time for registration, but there is one bus and it fills at the first stop, so on Monday at 7:40 the student was left on the pavement, because the bus is sent out before anyone counts who is waiting further along the route.",
+          "Your sentences use that same shape on your own problem, not on the full bus.",
         ],
       },
     ],
