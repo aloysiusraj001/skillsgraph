@@ -80,7 +80,7 @@ function FilmCard({
         <h3 className="text-lg font-semibold">{film.title}</h3>
         {audience === "teacher" && <p className="mt-1 text-sm">{film.cue}</p>}
       </div>
-      {audience === "teacher" && open && <VideoPlaceholder title={film.title} />}
+      {audience === "teacher" && open && <VideoPlayer title={film.title} src={film.videoUrl} />}
       {audience === "teacher" && (
         <div className="flex flex-wrap items-center gap-2">
           <Button type="button" className="h-11 px-4 text-base" disabled={saving || played} onClick={onPlay}>
@@ -99,7 +99,7 @@ function FilmCard({
           </Button>
           {open && (
             <div className="mt-3">
-              <VideoPlaceholder title={film.title} />
+              <VideoPlayer title={film.title} src={film.videoUrl} />
             </div>
           )}
         </div>
@@ -136,19 +136,35 @@ function FilmNotes({ film }: { film: Film }) {
   );
 }
 
-function VideoPlaceholder({ title }: { title: string }) {
-  return (
-    <div
-      className="grid aspect-video place-items-center rounded-2xl bg-[#1e2a44] px-6 text-center text-white"
-      role="img"
-      aria-label={`Video placeholder for ${title}`}
-    >
-      <div>
-        <span className="mx-auto flex size-14 items-center justify-center rounded-full border-2 border-white text-2xl" aria-hidden>▶</span>
-        <p className="mt-3 text-xl font-semibold">Video will play here</p>
-        <p className="mt-1 text-sm text-white/80">{title}</p>
+function VideoPlayer({ title, src }: { title: string; src: string }) {
+  const [failed, setFailed] = useState(false);
+  if (failed) {
+    return (
+      <div
+        className="grid aspect-video place-items-center rounded-2xl bg-[#1e2a44] px-6 text-center text-white"
+        role="img"
+        aria-label={`Video unavailable for ${title}`}
+      >
+        <div className="max-w-md">
+          <p className="text-xl font-semibold">Video could not load yet</p>
+          <p className="mt-2 text-sm text-white/80">
+            Publish public read access for `.mp4` files in Firebase Storage Rules, then reload this page. The written notes below still work.
+          </p>
+        </div>
       </div>
-    </div>
+    );
+  }
+  return (
+    <video
+      key={src}
+      src={src}
+      controls
+      playsInline
+      preload="metadata"
+      aria-label={title}
+      onError={() => setFailed(true)}
+      className="aspect-video w-full rounded-2xl bg-[#1e2a44]"
+    />
   );
 }
 
